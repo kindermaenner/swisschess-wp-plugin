@@ -1,0 +1,1 @@
+Es muss eine Turnierüberschrift gesetzt werden in den Grundeinstellungen
