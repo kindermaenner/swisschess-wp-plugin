@@ -4,7 +4,7 @@ use SwissChess\Parser\RankingParser;
 
 it('parses the full ranking list correctly', function () {
     $html = file_get_contents(
-        __DIR__ . '/../data/runde3/stadtmeisterschaft-teilrang.html'
+        __DIR__ . '/../../data/runde3/stadtmeisterschaft-teilrang.html'
     );
 
     $parser = new RankingParser();

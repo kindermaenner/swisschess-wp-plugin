@@ -168,4 +168,34 @@ class WordpressOutput
         return $html;
     }
 
+    protected function copyAllMeta(int $from_page_id, int $to_page_id): void
+    {
+        $blacklist_meta = [
+            '_thumbnail_id',
+            '_edit_last',
+            '_edit_lock',
+            '_wp_old_slug',
+            '_wp_trash_meta_status',
+            '_wp_trash_meta_time',
+            '_menu_item_menu_item_parent',
+            '_menu_item_object_id',
+            '_menu_item_object',
+            '_menu_item_type',
+            '_menu_item_url',
+        ];
+        
+        $all_meta = get_post_meta($from_page_id);
+
+        foreach ($all_meta as $key => $values) {
+
+            // WP interne Keys überspringen
+            if (in_array($key, $blacklist_meta, true)) {
+                continue;
+            }
+
+            foreach ($values as $value) {
+                update_post_meta($to_page_id, $key, maybe_unserialize($value));
+            }
+        }
+    }
 }

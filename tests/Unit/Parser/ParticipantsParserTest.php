@@ -5,7 +5,7 @@ declare(strict_types=1);
 use SwissChess\Parser\ParticipantsParser;
 
 it('extracts tournament name from html', function () {
-    $html = file_get_contents(__DIR__ . '/../data/runde3/stadtmeisterschaft-teil.html');
+    $html = file_get_contents(__DIR__ . '/../../data/runde3/stadtmeisterschaft-teil.html');
 
     $parser = new ParticipantsParser();
     $name = $parser->extractTournamentName($html);
@@ -14,7 +14,7 @@ it('extracts tournament name from html', function () {
 });
 
 it('creates an xpath from swisschess html', function () {
-    $html = file_get_contents(__DIR__ . '/../data/runde3/stadtmeisterschaft-teil.html');
+    $html = file_get_contents(__DIR__ . '/../../data/runde3/stadtmeisterschaft-teil.html');
 
     $parser = new ParticipantsParser();
     $xpath = $parser->parseHtml($html);
@@ -27,7 +27,7 @@ it('creates an xpath from swisschess html', function () {
 
 it('parses all participants correctly', function () {
     $html = file_get_contents(
-        __DIR__ . '/../data/runde3/stadtmeisterschaft-teil.html'
+        __DIR__ . '/../../data/runde3/stadtmeisterschaft-teil.html'
     );
 
     $parser = new ParticipantsParser();

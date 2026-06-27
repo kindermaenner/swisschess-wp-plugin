@@ -4,7 +4,7 @@ use SwissChess\Parser\PairingsParser;
 
 it('parses all pairings of round 1 correctly', function () {
     $html = file_get_contents(
-        __DIR__ . '/../data/runde2/stadtmeisterschaft-paar-r1.html'
+        __DIR__ . '/../../data/runde2/stadtmeisterschaft-paar-r1.html'
     );
 
     $parser = new PairingsParser();
@@ -90,7 +90,7 @@ it('parses all pairings of round 1 correctly', function () {
 
 it('parses all pairings of round 2 correctly', function () {
     $html = file_get_contents(
-        __DIR__ . '/../data/runde2/stadtmeisterschaft-paar-r2.html'
+        __DIR__ . '/../../data/runde2/stadtmeisterschaft-paar-r2.html'
     );
 
     $parser = new PairingsParser();

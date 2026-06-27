@@ -55,7 +55,7 @@ class SwissChessRunner
         ];
     }
 
-    private function findFiles(): array
+    protected function findFiles(): array
     {
         // Für WordPress
         $dir = WP_CONTENT_DIR . '/uploads/swisschess';
@@ -72,7 +72,7 @@ class SwissChessRunner
         return glob($dir . '/*.html') ?: [];
     }
 
-    private function parseFiles(array $files): void
+    protected function parseFiles(array $files): void
     {
         foreach ($files as $file) {
             $html = file_get_contents($file);
@@ -154,9 +154,9 @@ class SwissChessRunner
         return true;
     }
 
-    protected function allRoundsComplete(): bool
+    protected function allRoundsComplete(array $pairings): bool
     {
-        foreach ($this->pairings as $round) {
+        foreach ($pairings as $round) {
             foreach ($round as $board) {
                 if (empty($board['result']) || $board['result'] === '-') {
                     return false;
@@ -166,7 +166,7 @@ class SwissChessRunner
         return true;
     }
 
-    private function buildParticipantIndexByTwz(array $participants): array
+    protected function buildParticipantIndexByTwz(array $participants): array
     {
         $index = [];
 
@@ -179,7 +179,7 @@ class SwissChessRunner
         return $index;
     }
 
-    private function buildParticipantIndexById(array $participants): array
+    protected function buildParticipantIndexById(array $participants): array
     {
         $index = [];
 
@@ -195,7 +195,7 @@ class SwissChessRunner
         return $index;
     }
 
-    private function fixPairingNames(array $pairings, array $participants): array
+    protected function fixPairingNames(array $pairings, array $participants): array
     {
         // Teilnehmer-Index: number → name
         $index = [];
@@ -224,7 +224,7 @@ class SwissChessRunner
         return $pairings;
     }
 
-    private function fixRankingNames(array $ranking, array $participants): array
+    protected function fixRankingNames(array $ranking, array $participants): array
     {
         $index = $this->buildParticipantIndexByTwz($participants);
 
@@ -245,7 +245,7 @@ class SwissChessRunner
         return $ranking;
     }
 
-    private function groupPairingsByRound(array $pairings): array
+    protected function groupPairingsByRound(array $pairings): array
     {
         $grouped = [];
 

@@ -57,6 +57,8 @@ class StaticTournamentPage extends WordpressOutput {
                 'post_content' => $final_content,
             ]);
 
+            $this->copyAllMeta($template_page->ID, $page_id);
+
             return $page_id;
         }
 
@@ -69,6 +71,8 @@ class StaticTournamentPage extends WordpressOutput {
             'post_content' => $final_content,
             'post_author'  => get_option('swisschess_author') ?: 1,
         ]);
+
+        $this->copyAllMeta($template_page->ID, $page_id);
 
         // 7. Meta-Key setzen
         update_post_meta($page_id, $meta_key, '1');

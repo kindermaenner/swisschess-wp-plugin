@@ -5,7 +5,7 @@ declare(strict_types=1);
 use SwissChess\Scanner\FileScanner;
 
 it('scans directory and finds html files', function () {
-    $scanner = new FileScanner(__DIR__ . '/../data/runde1');
+    $scanner = new FileScanner(__DIR__ . '/../../data/runde1');
 
     $files = $scanner->scan();
 
@@ -15,7 +15,7 @@ it('scans directory and finds html files', function () {
 });
 
 it('only returns html files', function () {
-    $scanner = new FileScanner(__DIR__ . '/../data/runde1');
+    $scanner = new FileScanner(__DIR__ . '/../../data/runde1');
 
     $files = $scanner->scan();
 
@@ -25,7 +25,7 @@ it('only returns html files', function () {
 });
 
 it('finds known swisschess export files', function () {
-    $scanner = new FileScanner(__DIR__ . '/../data/runde1');
+    $scanner = new FileScanner(__DIR__ . '/../../data/runde1');
 
     $files = $scanner->scan();
 
