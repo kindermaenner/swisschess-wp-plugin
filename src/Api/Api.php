@@ -27,7 +27,12 @@ class Api {
 
     public static function verify_api_key($request) {
         $api_key = get_option('swisschess_api_key');
+
+        // Header-Variante (App)
         $header_key = $request->get_header('x-mb-key');
+
+        // GET-Variante (Cronjob)
+        $query_key = $request->get_param('key');
 
         if (!$api_key) {
             return new \WP_Error(
@@ -37,7 +42,10 @@ class Api {
             );
         }
 
-        if ($header_key !== $api_key) {
+        // Header hat Priorität, GET ist Fallback
+        $provided_key = $header_key ?: $query_key;
+
+        if ($provided_key !== $api_key) {
             return new \WP_Error(
                 'rest_forbidden',
                 'Unauthorized',
@@ -47,6 +55,7 @@ class Api {
 
         return true;
     }
+
 
     public static function scan($request) {
         $runner = new SwissChessRunner();

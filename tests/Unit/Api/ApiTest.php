@@ -8,10 +8,14 @@ use SwissChess\Api\Api;
 use SwissChess\Runner\SwissChessRunner;
 
 class FakeRequest {
-    public function __construct(private array $headers) {}
+    public function __construct(private array $headers, private array $params = []) {}
 
     public function get_header(string $key) {
         return $this->headers[$key] ?? null;
+    }
+
+    public function get_param(string $key) {
+        return $this->params[$key] ?? null;
     }
 }
 
@@ -55,6 +59,7 @@ test('verify_api_key returns error if API-Key is not set', function () {
 
     expect($result)->toBeInstanceOf(\WP_Error::class);
     expect($result->get_error_code())->toBe('rest_misconfigured');
+    expect($result->get_error_data()['status'])->toBe(500);
 });
 
 test('verify_api_key returns error if header key is incorrect', function () {
@@ -66,6 +71,7 @@ test('verify_api_key returns error if header key is incorrect', function () {
 
     expect($result)->toBeInstanceOf(\WP_Error::class);
     expect($result->get_error_code())->toBe('rest_forbidden');
+    expect($result->get_error_data()['status'])->toBe(403);
 });
 
 test('verify_api_key returns true if key is correct', function () {
@@ -76,4 +82,25 @@ test('verify_api_key returns true if key is correct', function () {
     $result = Api::verify_api_key($request);
 
     expect($result)->toBeTrue();
+});
+
+test('verify_api_key accepts the cron query key fallback', function () {
+    $GLOBALS['wp_options']['swisschess_api_key'] = 'correct-key';
+
+    $request = new FakeRequest([], ['key' => 'correct-key']);
+
+    $result = Api::verify_api_key($request);
+
+    expect($result)->toBeTrue();
+});
+
+test('scan returns wrapped runner response payload', function () {
+    $request = new FakeRequest(['x-mb-key' => 'correct-key']);
+
+    $result = Api::scan($request);
+
+    expect($result)->toBeArray();
+    expect($result['success'])->toBeTrue();
+    expect($result['data'])->toBeArray();
+    expect($result['data'])->toHaveKey('success');
 });
