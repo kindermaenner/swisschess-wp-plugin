@@ -100,6 +100,22 @@ it('returns true when last round has no results', function () {
     expect($r->testShouldPublishNextRound($pairings))->toBeTrue();
 });
 
+it('returns true when last round only has bye results and dashes', function () {
+    $r = new SwissChessRunnerTester();
+
+    $pairings = [
+        [
+            ['round' => 1, 'result' => '1-0']
+        ],
+        [
+            ['round' => 2, 'result' => '+ - -'],
+            ['round' => 2, 'result' => '-']
+        ]
+    ];
+
+    expect($r->testShouldPublishNextRound($pairings))->toBeTrue();
+});
+
 it('returns false when last round has results', function () {
     $r = new SwissChessRunnerTester();
 

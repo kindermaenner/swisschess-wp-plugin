@@ -6,7 +6,7 @@ namespace SwissChess\Output;
 
 class StaticTournamentPage extends WordpressOutput {
     
-    public function createOrUpdateStaticPage(array $participants, array $ranking, array $pairings, string $tournament_name): int
+    public function createOrUpdateStaticPage(array $participants, array $ranking, array $pairings, string $tournament_name): int|\WP_Error
     {
         // 1. Template laden
         $template_name = get_option('swisschess_template_static_page');
@@ -16,7 +16,10 @@ class StaticTournamentPage extends WordpressOutput {
 
         $template_page = get_page_by_title($template_name, OBJECT, 'page');
         if (!$template_page) {
-            return new \WP_Error('template_missing', 'Template-Seite wurde nicht gefunden.');
+            return new \WP_Error(
+                'template_missing',
+                sprintf('Template-Seite wurde nicht gefunden: "%s".', (string)$template_name)
+            );
         }
 
         $template_content = $template_page->post_content;

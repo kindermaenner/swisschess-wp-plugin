@@ -19,6 +19,8 @@ class SwissChessRunner
 
     public function run(): array
     {
+        $warnings = [];
+
         $files = $this->findFiles();
 
         if (empty($files)) {
@@ -33,10 +35,26 @@ class SwissChessRunner
         $staticPageUpdater = new StaticTournamentPage();
         $post_id = $staticPageUpdater->createOrUpdateStaticPage($this->participants, $this->ranking, $this->pairings, $this->tournament_name);
 
+        if ($post_id instanceof \WP_Error) {
+            return [
+                'success' => false,
+                'message' => $post_id->get_error_message(),
+                'error_code' => $post_id->get_error_code(),
+                'participants'=> $this->participants,
+                'ranking'     => $this->ranking,
+                'pairings'    => $this->pairings,
+                'warnings'    => $warnings,
+            ];
+        }
+
         // 1) Unfertige Runde → neue Auslosung veröffentlichen
         if ($this->shouldPublishNextRound($this->pairings)) {
             $nextRoundPost = new NextRoundPublishedPost();
-            $nextRoundPost->createNextRoundNews($this->pairings);
+            $nextRoundResult = $nextRoundPost->createNextRoundNews($this->pairings, $this->tournament_name);
+
+            if ($nextRoundResult instanceof \WP_Error) {
+                $warnings[] = $nextRoundResult->get_error_message();
+            }
         }
 
         // 2) Alle Runden fertig → Gesamtergebnis veröffentlichen
@@ -52,6 +70,7 @@ class SwissChessRunner
             'participants'=> $this->participants,
             'ranking'     => $this->ranking,
             'pairings'    => $this->pairings,
+            'warnings'    => $warnings,
         ];
     }
 
@@ -147,11 +166,19 @@ class SwissChessRunner
     protected function roundHasNoResults(array $round): bool
     {
         foreach ($round as $board) {
-            if (!empty($board['result']) && $board['result'] !== '-') {
+            $result = trim((string)($board['result'] ?? ''));
+
+            // Spielfrei-Eintraege wie "+ - -" sollen wie "kein gespieltes Ergebnis" gelten.
+            if ($result !== '' && $result !== '-' && !$this->isByeResult($result)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private function isByeResult(string $result): bool
+    {
+        return preg_match('/^[+\-\s]+$/', $result) === 1 && str_contains($result, '+');
     }
 
     protected function allRoundsComplete(array $pairings): bool

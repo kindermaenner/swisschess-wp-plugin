@@ -72,6 +72,14 @@
         }
     }
 
+    if (!function_exists('wp_upload_dir')) {
+        function wp_upload_dir() {
+            return $GLOBALS['wp_upload_dir'] ?? [
+                'basedir' => '/tmp/uploads',
+            ];
+        }
+    }
+
     if (!function_exists('get_users')) {
         function get_users($args = []) {
             return [
