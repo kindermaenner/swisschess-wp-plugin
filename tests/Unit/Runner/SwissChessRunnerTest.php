@@ -2,79 +2,10 @@
 
 declare(strict_types=1);
 
-use SwissChess\Runner\SwissChessRunner;
-
-/**
- * Dummy Parser Mocks
- */
-class DummyParticipantsParser {
-    public function parseParticipants($html) {
-        return [
-            ['number' => 1, 'name' => 'Max', 'twz' => 2000],
-            ['number' => 2, 'name' => 'Anna', 'twz' => 2100],
-        ];
-    }
-    public function extractTournamentName($html) {
-        return 'Testturnier';
-    }
-}
-
-class DummyRankingParser {
-    public function parseRanking($html) {
-        return [
-            ['rank' => 1, 'name' => 'Max', 'twz' => 2000],
-            ['rank' => 2, 'name' => 'Ann', 'twz' => 2100], // abgeschnitten
-        ];
-    }
-}
-
-class DummyPairingsParser {
-    public function parsePairings($html) {
-        return [
-            [
-                'round' => 1,
-                'board' => 1,
-                'white_id' => 1,
-                'black_id' => 2,
-                'result' => '-'
-            ]
-        ];
-    }
-}
-
-/**
- * Override Runner to inject mocks
- */
-class SwissChessRunnerTester extends SwissChessRunner
-{
-    public function testShouldPublishNextRound(array $pairings) {
-        return $this->shouldPublishNextRound($pairings);
-    }
-
-    public function testRoundHasResults(array $round) {
-        return $this->roundHasResults($round);
-    }
-
-    public function testRoundHasNoResults(array $round) {
-        return $this->roundHasNoResults($round);
-    }
-
-    public function testAllRoundsComplete(array $pairings) {
-        return $this->allRoundsComplete($pairings);
-    }
-
-    public function testFixPairingNames(array $pairings, array $participants) {
-        return $this->fixPairingNames($pairings, $participants);
-    }
-
-    public function testFixRankingNames(array $ranking, array $participants) {
-        return $this->fixRankingNames($ranking, $participants);
-    }
-
-    public function testGroupPairingsByRound(array $pairings) {
-        return $this->groupPairingsByRound($pairings);
-    }
-}
+use Tests\Unit\Helper\DummyPairingsParser;
+use Tests\Unit\Helper\DummyRankingParser;
+use Tests\Unit\Helper\DummyParticipantsParser;
+use Tests\Unit\Helper\SwissChessRunnerTester;
 
 # ---------------------------------------------------------
 # shouldPublishNextRound()

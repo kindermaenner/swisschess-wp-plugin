@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use SwissChess\Output\WordpressOutput;
+use Tests\Unit\Helper\WordpressOutputTester;
 
 /**
  * WP-Mocks
@@ -11,32 +11,6 @@ beforeEach(function () {
     $GLOBALS['wp_meta'] = [];
 });
 
-
-/**
- * Test-Wrapper für protected Methoden
- */
-class WordpressOutputTester extends WordpressOutput
-{
-    public function participants(array $p): string
-    {
-        return $this->participantsToHtmlTable($p);
-    }
-
-    public function ranking(array $r): string
-    {
-        return $this->rankingToHtmlTable($r);
-    }
-
-    public function pairings(array $p): string
-    {
-        return $this->pairingsToHtmlTable($p);
-    }
-
-    public function copyMeta(int $from, int $to)
-    {
-        return $this->copyAllMeta($from, $to);
-    }
-}
 
 # ---------------------------------------------------------
 # participantsToHtmlTable

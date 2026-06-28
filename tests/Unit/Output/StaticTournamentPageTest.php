@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use SwissChess\Output\StaticTournamentPage;
+use Tests\Unit\Helper\StaticTournamentPageTester;
 
 /**
  * WP-Mocks
@@ -33,17 +33,6 @@ beforeEach(function () {
     $GLOBALS['wp_nav_menu_items'] = [];
     $GLOBALS['wp_meta'][100]['_thumbnail_id'] = ['555'];
 });
-
-/**
- * Testklasse
- */
-class StaticTournamentPageTester extends StaticTournamentPage
-{
-    public function callCreate(array $participants, array $ranking, array $pairings, string $name)
-    {
-        return $this->createOrUpdateStaticPage($participants, $ranking, $pairings, $name);
-    }
-}
 
 # ---------------------------------------------------------
 # TESTS
