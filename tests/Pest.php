@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 use Tests\TestCase;
 
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../bootstrap/wordpress.php';
+require __DIR__ . '/../bootstrap/WordPress.php';
 
 /*
 |--------------------------------------------------------------------------
