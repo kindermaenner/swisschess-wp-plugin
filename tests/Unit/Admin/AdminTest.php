@@ -21,7 +21,9 @@ it('registers main menu', function () {
 
 it('renders settings page with stored values', function () {
     $GLOBALS['wp_options']['swisschess_author'] = 2;
-    $GLOBALS['wp_options']['swisschess_template'] = 'Template A';
+    $GLOBALS['wp_options']['swisschess_template_static_page'] = 'Template A';
+    $GLOBALS['wp_options']['swisschess_template_next_round_post'] = 'Template B';
+    $GLOBALS['wp_options']['swisschess_template_final_results_post'] = 'Template C';
     $GLOBALS['wp_options']['swisschess_api_key'] = 'key-123';
 
     ob_start();
@@ -30,9 +32,13 @@ it('renders settings page with stored values', function () {
 
     expect($html)->toContain('Swiss Chess');
     expect($html)->toContain('Template A');
+    expect($html)->toContain('Template B');
+    expect($html)->toContain('Template C');
     expect($html)->toContain('key-123');
     expect($html)->toContain('name="swisschess_author"');
-    expect($html)->toContain('name="swisschess_template"');
+    expect($html)->toContain('name="swisschess_template_static_page"');
+    expect($html)->toContain('name="swisschess_template_next_round_post"');
+    expect($html)->toContain('name="swisschess_template_final_results_post"');
 });
 
 it('generates and stores a new api key from settings page', function () {

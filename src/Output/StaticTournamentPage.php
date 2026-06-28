@@ -9,9 +9,9 @@ class StaticTournamentPage extends WordpressOutput {
     public function createOrUpdateStaticPage(array $participants, array $ranking, array $pairings, string $tournament_name): int
     {
         // 1. Template laden
-        $template_name = get_option('swisschess_template');
+        $template_name = get_option('swisschess_template_static_page');
         if (!$template_name) {
-            return new \WP_Error('no_template', 'Kein Template in swisschess_template definiert.');
+            return new \WP_Error('no_template', 'Kein Template in swisschess_template_static_page definiert.');
         }
 
         $template_page = get_page_by_title($template_name, OBJECT, 'page');

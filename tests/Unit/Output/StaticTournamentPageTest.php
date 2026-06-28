@@ -10,7 +10,7 @@ use SwissChess\Output\StaticTournamentPage;
 beforeEach(function () {
     // Optionen
     $GLOBALS['wp_options'] = [
-        'swisschess_template' => 'TemplatePage',
+        'swisschess_template_static_page' => 'TemplatePage',
         'swisschess_author'   => 1,
     ];
 

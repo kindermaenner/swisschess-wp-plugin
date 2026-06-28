@@ -14,7 +14,9 @@ class Admin {
         add_action('admin_menu', [self::class, 'register_menu']);
         add_action('admin_init', function() {
             register_setting('swisschess', 'swisschess_author');
-            register_setting('swisschess', 'swisschess_template');
+            register_setting('swisschess', 'swisschess_template_static_page');
+            register_setting('swisschess', 'swisschess_template_next_round_post');
+            register_setting('swisschess', 'swisschess_template_final_results_post');
             register_setting('swisschess', 'swisschess_api_key');
             register_setting('swisschess', 'swisschess_delete_after_import');
         });
@@ -36,7 +38,9 @@ class Admin {
 
         // Aktuelle Werte laden
         $author    = get_option('swisschess_author', '');
-        $template  = get_option('swisschess_template', '');
+        $template_static_page = get_option('swisschess_template_static_page', '');
+        $template_next_round_post = get_option('swisschess_template_next_round_post', '');
+        $template_final_results_post = get_option('swisschess_template_final_results_post', '');
         $api_key   = get_option('swisschess_api_key', '');
         $delete_after_import = get_option('swisschess_delete_after_import', false);
         // Wenn "Neuen Key generieren" gedrückt wurde (eigenes Formular!)
@@ -102,9 +106,19 @@ class Admin {
         echo '</select>';
         echo '</td></tr>';
 
-        // Template-Name
-        echo '<tr><th scope="row">Template‑Name</th><td>';
-        echo '<input type="text" name="swisschess_template" value="' . esc_attr($template) . '" class="regular-text">';
+        // Template für statische Turnierseite
+        echo '<tr><th scope="row">Template: Statische Turnierseite</th><td>';
+        echo '<input type="text" name="swisschess_template_static_page" value="' . esc_attr($template_static_page) . '" class="regular-text">';
+        echo '</td></tr>';
+
+        // Template für Beitrag zur neu ausgelosten Runde
+        echo '<tr><th scope="row">Template: Beitrag neu ausgeloste Runde</th><td>';
+        echo '<input type="text" name="swisschess_template_next_round_post" value="' . esc_attr($template_next_round_post) . '" class="regular-text">';
+        echo '</td></tr>';
+
+        // Template für Beitrag über Turnierergebnis
+        echo '<tr><th scope="row">Template: Beitrag Turnierergebnis</th><td>';
+        echo '<input type="text" name="swisschess_template_final_results_post" value="' . esc_attr($template_final_results_post) . '" class="regular-text">';
         echo '</td></tr>';
 
         // Dateien nach Import löschen
