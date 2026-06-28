@@ -4,6 +4,10 @@
         define('ABSPATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
     }
 
+    if (!defined('WP_CONTENT_DIR')) {
+        define('WP_CONTENT_DIR', '/tmp/wp-content');
+    }
+
     if (!defined('OBJECT')) {
         define('OBJECT', 'OBJECT');
     }
@@ -192,6 +196,12 @@
         }
     }
 
+    if (!function_exists('rest_ensure_response')) {
+        function rest_ensure_response($data) {
+            return $data;
+        }
+    }
+
     function esc_html($text)
     {
         return htmlspecialchars((string)$text, ENT_QUOTES, 'UTF-8');
@@ -205,6 +215,23 @@
             }
         }
         return null;
+    }
+
+    if (!function_exists('get_page_by_path')) {
+        function get_page_by_path($page_path, $output = OBJECT, $post_type = 'page') {
+            $types = is_array($post_type) ? $post_type : [$post_type];
+
+            foreach ($GLOBALS['wp_pages'] as $p) {
+                $name = (string)($p['post_name'] ?? '');
+                $type = (string)($p['post_type'] ?? 'page');
+
+                if ($name === (string)$page_path && in_array($type, $types, true)) {
+                    return (object)$p;
+                }
+            }
+
+            return null;
+        }
     }
 
     function get_posts($args)

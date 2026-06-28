@@ -73,7 +73,9 @@ class SwissChessRunner
             }
         }
 
-        //$this->cleanup($files);
+        if (get_option('swisschess_delete_after_import')) {
+            $this->cleanupImportedFiles($files);
+        }
 
         return [
             'success'     => true,
@@ -296,6 +298,15 @@ class SwissChessRunner
         krsort($grouped);
 
         return $grouped;
+    }
+
+    protected function cleanupImportedFiles(array $files): void
+    {
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                @unlink($file);
+            }
+        }
     }
 
 }
