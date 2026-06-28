@@ -60,7 +60,6 @@ class SwissChessRunnerTester extends SwissChessRunner
     }
 
     public function testAllRoundsComplete(array $pairings) {
-        $this->pairings = $pairings;
         return $this->allRoundsComplete($pairings);
     }
 

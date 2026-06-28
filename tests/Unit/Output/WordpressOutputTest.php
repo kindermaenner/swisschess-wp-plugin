@@ -8,32 +8,9 @@ use SwissChess\Output\WordpressOutput;
  * WP-Mocks
  */
 beforeEach(function () {
-    $GLOBALS['test_meta'] = [];
+    $GLOBALS['wp_meta'] = [];
 });
 
-/**
- * Mock: get_post_meta
- */
-function get_post_meta($post_id)
-{
-    return $GLOBALS['test_meta'][$post_id] ?? [];
-}
-
-/**
- * Mock: update_post_meta
- */
-function update_post_meta($post_id, $key, $value)
-{
-    if (!isset($GLOBALS['test_meta'][$post_id])) {
-        $GLOBALS['test_meta'][$post_id] = [];
-    }
-
-    if (!isset($GLOBALS['test_meta'][$post_id][$key])) {
-        $GLOBALS['test_meta'][$post_id][$key] = [];
-    }
-
-    $GLOBALS['test_meta'][$post_id][$key][] = $value;
-}
 
 /**
  * Test-Wrapper für protected Methoden
@@ -194,7 +171,7 @@ it('copies all meta except blacklist', function () {
     $from = 10;
     $to   = 20;
 
-    $GLOBALS['test_meta'][$from] = [
+    $GLOBALS['wp_meta'][$from] = [
         '_generate_layout' => ['full-width'],
         '_generate_sidebar_layout' => ['no-sidebar'],
         '_custom_key' => ['abc'],
@@ -205,19 +182,19 @@ it('copies all meta except blacklist', function () {
     $o = new WordpressOutputTester();
     $o->copyMeta($from, $to);
 
-    expect($GLOBALS['test_meta'][$to])
+    expect($GLOBALS['wp_meta'][$to])
         ->not->toHaveKey('_edit_last')
         ->not->toHaveKey('_thumbnail_id');
 
-    expect($GLOBALS['test_meta'][$to])
+    expect($GLOBALS['wp_meta'][$to])
         ->toHaveKey('_generate_layout')
         ->toHaveKey('_generate_sidebar_layout')
         ->toHaveKey('_custom_key');
 
-    expect($GLOBALS['test_meta'][$to]['_generate_layout'][0])
+    expect($GLOBALS['wp_meta'][$to]['_generate_layout'][0])
         ->toBe('full-width');
 
-    expect($GLOBALS['test_meta'][$to]['_custom_key'][0])
+    expect($GLOBALS['wp_meta'][$to]['_custom_key'][0])
         ->toBe('abc');
 });
 
@@ -226,14 +203,14 @@ it('copies multiple values per meta key', function () {
     $from = 11;
     $to   = 21;
 
-    $GLOBALS['test_meta'][$from] = [
+    $GLOBALS['wp_meta'][$from] = [
         '_generate_layout' => ['full-width', 'override'],
     ];
 
     $o = new WordpressOutputTester();
     $o->copyMeta($from, $to);
 
-    expect($GLOBALS['test_meta'][$to]['_generate_layout'])
+    expect($GLOBALS['wp_meta'][$to]['_generate_layout'])
         ->toBe(['full-width', 'override']);
 });
 
@@ -244,13 +221,13 @@ it('unserializes values correctly', function () {
 
     $serialized = serialize(['a' => 1, 'b' => 2]);
 
-    $GLOBALS['test_meta'][$from] = [
+    $GLOBALS['wp_meta'][$from] = [
         '_generate_complex' => [$serialized],
     ];
 
     $o = new WordpressOutputTester();
     $o->copyMeta($from, $to);
 
-    expect($GLOBALS['test_meta'][$to]['_generate_complex'][0])
+    expect($GLOBALS['wp_meta'][$to]['_generate_complex'][0])
         ->toBe(['a' => 1, 'b' => 2]);
 });
