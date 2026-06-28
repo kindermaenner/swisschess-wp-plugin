@@ -86,3 +86,90 @@ it('copies featured image from final results template on create', function () {
     expect(isset($GLOBALS['wp_meta'][$postId]['_edit_lock']))->toBeFalse();
     expect($GLOBALS['wp_set_terms'][$postId]['category'])->toBe([21]);
 });
+
+it('returns error when final-results template is not configured', function () {
+    $output = new FinalResultsPublishedPost();
+
+    $GLOBALS['wp_options']['swisschess_template_final_results_post'] = '';
+
+    $result = $output->createFinalResultsNews([], [], [], 'Stadtmeisterschaft 2026');
+
+    expect($result)->toBeInstanceOf(WP_Error::class);
+    expect($result->get_error_code())->toBe('no_final_results_template');
+});
+
+it('returns error when configured final-results template cannot be found', function () {
+    $output = new FinalResultsPublishedPost();
+
+    $GLOBALS['wp_options']['swisschess_template_final_results_post'] = 'NichtVorhanden';
+
+    $result = $output->createFinalResultsNews([], [], [], 'Stadtmeisterschaft 2026');
+
+    expect($result)->toBeInstanceOf(WP_Error::class);
+    expect($result->get_error_code())->toBe('final_results_template_missing');
+});
+
+it('updates existing final-results post when marker meta key exists', function () {
+    $output = new FinalResultsPublishedPost();
+
+    $participants = [[
+        'number' => 1,
+        'name' => 'Max',
+        'title' => 'FM',
+        'twz' => 2000,
+        'gender' => 'M',
+        'club' => 'SV Musterstadt',
+        'country' => 'DE',
+    ]];
+
+    $ranking = [[
+        'rank' => 1,
+        'name' => 'Max',
+        'title' => 'FM',
+        'twz' => 2000,
+        'gender' => 'M',
+        'points' => '1.0',
+        'wins' => 1,
+        'draws' => 0,
+        'losses' => 0,
+        'buchholz' => '0.0',
+        'sonneborn' => '0.0',
+        'club' => 'SV Musterstadt',
+        'country' => 'DE',
+    ]];
+
+    $pairings = [[[ 
+        'round' => 1,
+        'board' => 1,
+        'white_id' => 1,
+        'white_name' => 'Max',
+        'white_points' => '0.0',
+        'black_id' => 2,
+        'black_name' => 'Anna',
+        'black_points' => '0.0',
+        'result' => '1-0',
+    ]]];
+
+    $existingId = 901;
+    $slug = 'stadtmeisterschaft-2026-turnier-beendet';
+    $metaKey = '_' . $slug . '_final_results_post';
+
+    $GLOBALS['wp_pages'][] = [
+        'ID' => $existingId,
+        'post_title' => 'Alt',
+        'post_name' => $slug,
+        'post_content' => 'ALT',
+        'post_type' => 'post',
+        'meta' => [],
+    ];
+    $GLOBALS['wp_meta'][$existingId][$metaKey] = ['1'];
+
+    $postId = $output->createFinalResultsNews($participants, $ranking, $pairings, 'Stadtmeisterschaft 2026');
+
+    expect($postId)->toBe($existingId);
+    expect($GLOBALS['wp_inserted'])->toHaveCount(0);
+    expect($GLOBALS['wp_updated'])->toHaveCount(1);
+    expect($GLOBALS['wp_updated'][0]['ID'])->toBe($existingId);
+    expect($GLOBALS['wp_updated'][0]['post_name'])->toBe($slug);
+    expect($GLOBALS['wp_meta'][$postId]['_thumbnail_id'][0])->toBe('888');
+});

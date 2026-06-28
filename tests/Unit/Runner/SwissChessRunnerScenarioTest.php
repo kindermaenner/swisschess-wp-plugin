@@ -83,7 +83,7 @@ function prepareRunnerScenarioGlobals(string $dataDir): void
     $GLOBALS['wp_updated'] = [];
 }
 
-it('neue_auslosung updates static page and creates next-round post', function () {
+it('new pairing updates static page and creates next-round post', function () {
     $dataDir = __DIR__ . '/../../data/neue_auslosung';
     prepareRunnerScenarioGlobals($dataDir);
 
@@ -108,7 +108,7 @@ it('neue_auslosung updates static page and creates next-round post', function ()
     expect($nextRoundMetaFound)->toBeTrue();
 });
 
-it('turnier_beendet updates static page and creates final-results post', function () {
+it('finished tournament updates static page and creates final-results post', function () {
     $dataDir = __DIR__ . '/../../data/turnier_beendet';
     prepareRunnerScenarioGlobals($dataDir);
 
@@ -133,7 +133,7 @@ it('turnier_beendet updates static page and creates final-results post', functio
     expect($finalMetaFound)->toBeTrue();
 });
 
-it('zwischenergebnisse only updates static page and creates no round/final post', function () {
+it('intermediate results only updates static page and creates no round/final post', function () {
     $dataDir = __DIR__ . '/../../data/zwischenergebnisse';
     prepareRunnerScenarioGlobals($dataDir);
 
