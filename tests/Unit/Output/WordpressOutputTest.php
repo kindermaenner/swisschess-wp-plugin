@@ -166,7 +166,7 @@ it('renders pairings table correctly', function () {
 # copyAllMeta
 # ---------------------------------------------------------
 
-it('copies all meta except blacklist', function () {
+it('copies all meta except blacklist and includes featured image meta', function () {
 
     $from = 10;
     $to   = 20;
@@ -183,19 +183,22 @@ it('copies all meta except blacklist', function () {
     $o->copyMeta($from, $to);
 
     expect($GLOBALS['wp_meta'][$to])
-        ->not->toHaveKey('_edit_last')
-        ->not->toHaveKey('_thumbnail_id');
+        ->not->toHaveKey('_edit_last');
 
     expect($GLOBALS['wp_meta'][$to])
         ->toHaveKey('_generate_layout')
         ->toHaveKey('_generate_sidebar_layout')
-        ->toHaveKey('_custom_key');
+        ->toHaveKey('_custom_key')
+        ->toHaveKey('_thumbnail_id');
 
     expect($GLOBALS['wp_meta'][$to]['_generate_layout'][0])
         ->toBe('full-width');
 
     expect($GLOBALS['wp_meta'][$to]['_custom_key'][0])
         ->toBe('abc');
+
+    expect($GLOBALS['wp_meta'][$to]['_thumbnail_id'][0])
+        ->toBe(999);
 });
 
 it('copies multiple values per meta key', function () {

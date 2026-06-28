@@ -9,6 +9,7 @@ use SwissChess\Parser\RankingParser;
 use SwissChess\Parser\PairingsParser;
 use SwissChess\Output\StaticTournamentPage;
 use SwissChess\Output\NextRoundPublishedPost;
+use SwissChess\Output\FinalResultsPublishedPost;
 
 class SwissChessRunner
 {
@@ -59,7 +60,17 @@ class SwissChessRunner
 
         // 2) Alle Runden fertig → Gesamtergebnis veröffentlichen
         if ($this->allRoundsComplete($this->pairings)) {
-           //$this->createWinnerNews($this->pairings, $this->participants);
+            $finalResultsPost = new FinalResultsPublishedPost();
+            $finalResults = $finalResultsPost->createFinalResultsNews(
+                $this->participants,
+                $this->ranking,
+                $this->pairings,
+                $this->tournament_name
+            );
+
+            if ($finalResults instanceof \WP_Error) {
+                $warnings[] = $finalResults->get_error_message();
+            }
         }
 
         //$this->cleanup($files);

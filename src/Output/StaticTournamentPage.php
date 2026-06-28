@@ -61,6 +61,7 @@ class StaticTournamentPage extends WordpressOutput {
             ]);
 
             $this->copyAllMeta($template_page->ID, $page_id);
+            $this->removePageFromMenus((int)$page_id);
 
             return $page_id;
         }
@@ -79,7 +80,45 @@ class StaticTournamentPage extends WordpressOutput {
 
         // 7. Meta-Key setzen
         update_post_meta($page_id, $meta_key, '1');
+        $this->removePageFromMenus((int)$page_id);
 
         return $page_id;
+    }
+
+    private function removePageFromMenus(int $pageId): void
+    {
+        if (!function_exists('wp_get_nav_menus')
+            || !function_exists('wp_get_nav_menu_items')
+            || !function_exists('wp_delete_post')) {
+            return;
+        }
+
+        $menus = wp_get_nav_menus();
+
+        if (empty($menus)) {
+            return;
+        }
+
+        foreach ($menus as $menu) {
+            $menuId = (int)($menu->term_id ?? 0);
+            if ($menuId <= 0) {
+                continue;
+            }
+
+            $items = wp_get_nav_menu_items($menuId, ['post_status' => 'any']);
+            if (empty($items)) {
+                continue;
+            }
+
+            foreach ($items as $item) {
+                $objectId = (int)($item->object_id ?? 0);
+                $itemId = (int)($item->ID ?? 0);
+                $itemObject = (string)($item->object ?? '');
+
+                if ($itemId > 0 && $objectId === $pageId && $itemObject === 'page') {
+                    wp_delete_post($itemId, true);
+                }
+            }
+        }
     }
 }

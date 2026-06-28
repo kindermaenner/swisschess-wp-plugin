@@ -18,8 +18,8 @@ class PairingsParser extends SwissChessParser
         foreach ($rows as $row) {
             $cells = $row->getElementsByTagName('td');
 
-            // SwissChess hat exakt 8 Spalten
-            if ($cells->length < 8) {
+            // Es werden Spalten bis Index 10 gelesen.
+            if ($cells->length < 11) {
                 continue;
             }
 

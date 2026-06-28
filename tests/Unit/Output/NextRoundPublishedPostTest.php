@@ -23,12 +23,19 @@ beforeEach(function () {
     $GLOBALS['wp_meta'] = [
         300 => [
             'layout' => ['fullwidth'],
+            '_thumbnail_id' => ['777'],
             '_edit_lock' => ['12345'],
         ],
     ];
 
     $GLOBALS['wp_inserted'] = [];
     $GLOBALS['wp_updated'] = [];
+    $GLOBALS['wp_set_terms'] = [];
+    $GLOBALS['wp_terms_by_post'][300]['category'] = [
+        (object)['term_id' => 10, 'name' => 'Template'],
+        (object)['term_id' => 11, 'name' => 'News'],
+        (object)['term_id' => 12, 'name' => 'Open'],
+    ];
 });
 
 it('creates next round post from template with placeholders and copies allowed meta', function () {
@@ -80,7 +87,9 @@ it('creates next round post from template with placeholders and copies allowed m
     expect($insert['post_content'])->not->toContain('Viel Erfolg allen Teilnehmern!');
 
     expect($GLOBALS['wp_meta'][$postId]['layout'][0])->toBe('fullwidth');
+    expect($GLOBALS['wp_meta'][$postId]['_thumbnail_id'][0])->toBe('777');
     expect(isset($GLOBALS['wp_meta'][$postId]['_edit_lock']))->toBeFalse();
+    expect($GLOBALS['wp_set_terms'][$postId]['category'])->toBe([11, 12]);
 });
 
 it('updates existing next round post when marker meta key already exists', function () {
@@ -139,7 +148,9 @@ it('updates existing next round post when marker meta key already exists', funct
     expect($GLOBALS['wp_updated'][0]['post_content'])->toContain('Turnier: Stadtmeisterschaft 2026');
 
     expect($GLOBALS['wp_meta'][$postId]['layout'][0])->toBe('fullwidth');
+    expect($GLOBALS['wp_meta'][$postId]['_thumbnail_id'][0])->toBe('777');
     expect(isset($GLOBALS['wp_meta'][$postId]['_edit_lock']))->toBeFalse();
+    expect($GLOBALS['wp_set_terms'][$postId]['category'])->toBe([11, 12]);
 });
 
 it('returns error when next round template is not configured', function () {

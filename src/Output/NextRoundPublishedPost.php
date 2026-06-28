@@ -96,6 +96,7 @@ class NextRoundPublishedPost extends WordpressOutput {
 
         if ($templatePage && $postId > 0) {
             $this->copyAllMeta((int)$templatePage->ID, $postId);
+            $this->copyCategoriesWithoutTemplateCategory((int)$templatePage->ID, $postId);
         }
 
         return $postId;

@@ -28,6 +28,10 @@ beforeEach(function () {
     // Inserted/Updated pages
     $GLOBALS['wp_inserted'] = [];
     $GLOBALS['wp_updated']  = [];
+    $GLOBALS['wp_deleted_posts'] = [];
+    $GLOBALS['wp_nav_menus'] = [];
+    $GLOBALS['wp_nav_menu_items'] = [];
+    $GLOBALS['wp_meta'][100]['_thumbnail_id'] = ['555'];
 });
 
 /**
@@ -111,6 +115,7 @@ it('creates a new static page when none exists', function () {
 
     expect($meta)->not->toBeNull();
     expect($meta[0])->toBe('1');
+    expect($GLOBALS['wp_meta'][$id]['_thumbnail_id'][0])->toBe('555');
 });
 
 it('updates an existing static page when meta key exists', function () {
@@ -185,4 +190,71 @@ it('updates an existing static page when meta key exists', function () {
     expect($update['post_name'])->toBe('stadtmeisterschaft-2026');
 
     expect($update['post_content'])->toContain('Stadtmeisterschaft 2026');
+    expect($GLOBALS['wp_meta'][$id]['_thumbnail_id'][0])->toBe('555');
+});
+
+it('removes static page from nav menus on update', function () {
+    $GLOBALS['wp_pages'][] = [
+        'ID' => 500,
+        'post_title' => 'stadtmeisterschaft-2026',
+        'post_name' => 'stadtmeisterschaft-2026',
+        'post_content' => 'ALT',
+    ];
+
+    $GLOBALS['wp_meta'][500]['_stadtmeisterschaft-2026_static_page'] = ['1'];
+
+    $GLOBALS['wp_nav_menus'] = [
+        (object)['term_id' => 1],
+    ];
+
+    $GLOBALS['wp_nav_menu_items'][1] = [
+        (object)['ID' => 9001, 'object_id' => 500, 'object' => 'page'],
+        (object)['ID' => 9002, 'object_id' => 999, 'object' => 'page'],
+    ];
+
+    $page = new StaticTournamentPageTester();
+
+    $participants = [[
+        'number' => 1,
+        'name' => 'Max',
+        'title' => 'FM',
+        'twz' => 2000,
+        'gender' => 'M',
+        'club' => 'SV Musterstadt',
+        'country' => 'DE',
+    ]];
+
+    $ranking = [[
+        'rank' => 1,
+        'name' => 'Max',
+        'title' => 'FM',
+        'twz' => 2000,
+        'gender' => 'M',
+        'points' => '1.0',
+        'wins' => 1,
+        'draws' => 0,
+        'losses' => 0,
+        'buchholz' => '0.0',
+        'sonneborn' => '0.0',
+        'club' => 'SV Musterstadt',
+        'country' => 'DE',
+    ]];
+
+    $pairings = [[[
+        'round' => 1,
+        'board' => 1,
+        'white_id' => 1,
+        'white_name' => 'Max',
+        'white_points' => '0.0',
+        'black_id' => 1,
+        'black_name' => 'Max',
+        'black_points' => '0.0',
+        'result' => '-',
+    ]]];
+
+    $page->callCreate($participants, $ranking, $pairings, 'Stadtmeisterschaft 2026');
+
+    expect($GLOBALS['wp_deleted_posts'])->toHaveCount(1);
+    expect($GLOBALS['wp_deleted_posts'][0]['post_id'])->toBe(9001);
+    expect($GLOBALS['wp_deleted_posts'][0]['force_delete'])->toBeTrue();
 });

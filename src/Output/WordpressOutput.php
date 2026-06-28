@@ -171,7 +171,6 @@ class WordpressOutput
     protected function copyAllMeta(int $from_page_id, int $to_page_id): void
     {
         $blacklist_meta = [
-            '_thumbnail_id',
             '_edit_last',
             '_edit_lock',
             '_wp_old_slug',
@@ -197,5 +196,33 @@ class WordpressOutput
                 update_post_meta($to_page_id, $key, maybe_unserialize($value));
             }
         }
+    }
+
+    protected function copyCategoriesWithoutTemplateCategory(int $from_post_id, int $to_post_id): void
+    {
+        if (!function_exists('wp_get_post_terms') || !function_exists('wp_set_post_terms')) {
+            return;
+        }
+
+        $terms = wp_get_post_terms($from_post_id, 'category');
+        if (empty($terms)) {
+            return;
+        }
+
+        $categoryIds = [];
+
+        foreach ($terms as $term) {
+            $name = strtolower(trim((string)($term->name ?? '')));
+            if ($name === 'template') {
+                continue;
+            }
+
+            $termId = (int)($term->term_id ?? 0);
+            if ($termId > 0) {
+                $categoryIds[] = $termId;
+            }
+        }
+
+        wp_set_post_terms($to_post_id, array_values(array_unique($categoryIds)), 'category', false);
     }
 }
