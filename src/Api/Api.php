@@ -19,7 +19,7 @@ class Api {
     public static function register_routes() {
 
         register_rest_route('swisschess/v1', '/scan', [
-            'methods'  => 'POST',
+            'methods'  => ['POST', 'GET'],
             'callback' => [self::class, 'scan'],
             'permission_callback' => [self::class, 'verify_api_key'],
         ]);
