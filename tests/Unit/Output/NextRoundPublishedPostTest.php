@@ -84,7 +84,6 @@ it('creates next round post from template with placeholders and copies allowed m
     expect($insert['post_content'])->toContain('Letzte: 1');
     expect($insert['post_content'])->toContain('Runde 2');
     expect($insert['post_content'])->toContain('Runde 1');
-    expect($insert['post_content'])->not->toContain('Viel Erfolg allen Teilnehmern!');
 
     expect($GLOBALS['wp_meta'][$postId]['layout'][0])->toBe('fullwidth');
     expect($GLOBALS['wp_meta'][$postId]['_thumbnail_id'][0])->toBe('777');

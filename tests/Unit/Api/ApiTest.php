@@ -34,7 +34,7 @@ test('Api::register_routes registers scan route correctly', function () {
     expect($route['namespace'])->toBe('swisschess/v1');
     expect($route['route'])->toBe('/scan');
 
-    expect($route['args']['methods'])->toBe('POST');
+    expect($route['args']['methods'])->toBe(['POST', 'GET']);
     expect($route['args']['callback'])->toBe([Api::class, 'scan']);
     expect($route['args']['permission_callback'])->toBe([Api::class, 'verify_api_key']);
 });
