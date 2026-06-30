@@ -28,6 +28,14 @@ class FinalResultsPublishedPost extends WordpressOutput
 
         $templateContent = (string)($templatePost->post_content ?? '');
 
+        $lastRound = $this->detectLastRound($pairings);
+        if ($lastRound < 5) {
+            return new \WP_Error(
+                'final_results_round_too_low',
+                sprintf('Ergebnis-Beitrag wird erst ab Runde 5 erzeugt (aktuell: %d).', $lastRound)
+            );
+        }
+
         $replacements = [
             '{{tournament_name}}' => $tournamentLabel,
             '{{participants}}' => $this->participantsToHtmlTable($participants),
@@ -80,6 +88,26 @@ class FinalResultsPublishedPost extends WordpressOutput
         }
 
         return $postId;
+    }
+
+    private function detectLastRound(array $pairings): int
+    {
+        $maxRound = 0;
+
+        foreach ($pairings as $roundPairings) {
+            if (!is_array($roundPairings)) {
+                continue;
+            }
+
+            foreach ($roundPairings as $pairing) {
+                $round = (int)($pairing['round'] ?? 0);
+                if ($round > $maxRound) {
+                    $maxRound = $round;
+                }
+            }
+        }
+
+        return $maxRound;
     }
 
     private function resolveTemplatePost(string $templateName)

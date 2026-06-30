@@ -36,7 +36,7 @@ class StaticTournamentPage extends WordpressOutput {
 
         // 3. Slug & Titel erzeugen
         $slug = sanitize_title(str_replace(' ', '-', $tournament_name));
-        $title = $slug;
+        $title = $tournament_name;
 
         // 4. Meta-Key erzeugen
         $meta_key = '_' . $slug . '_static_page';
@@ -63,6 +63,9 @@ class StaticTournamentPage extends WordpressOutput {
             $this->copyAllMeta($template_page->ID, $page_id);
             $this->removePageFromMenus((int)$page_id);
 
+            update_post_meta($page_id, $meta_key, '1');
+            update_post_meta($page_id, '_stadtmeisterschaft_year', $year);
+
             return $page_id;
         }
 
@@ -80,6 +83,8 @@ class StaticTournamentPage extends WordpressOutput {
 
         // 7. Meta-Key setzen
         update_post_meta($page_id, $meta_key, '1');
+        update_post_meta($page_id, '_stadtmeisterschaft_year', $year);
+
         $this->removePageFromMenus((int)$page_id);
 
         return $page_id;

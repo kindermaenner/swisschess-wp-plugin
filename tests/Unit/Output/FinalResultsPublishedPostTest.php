@@ -68,7 +68,7 @@ it('copies featured image from final results template on create', function () {
     ]];
 
     $pairings = [[[
-        'round' => 1,
+        'round' => 5,
         'board' => 1,
         'white_id' => 1,
         'white_name' => 'Max',
@@ -139,7 +139,7 @@ it('updates existing final-results post when marker meta key exists', function (
     ]];
 
     $pairings = [[[ 
-        'round' => 1,
+        'round' => 5,
         'board' => 1,
         'white_id' => 1,
         'white_name' => 'Max',
@@ -172,4 +172,27 @@ it('updates existing final-results post when marker meta key exists', function (
     expect($GLOBALS['wp_updated'][0]['ID'])->toBe($existingId);
     expect($GLOBALS['wp_updated'][0]['post_name'])->toBe($slug);
     expect($GLOBALS['wp_meta'][$postId]['_thumbnail_id'][0])->toBe('888');
+});
+
+it('does not create final-results post when last round is below 5', function () {
+    $output = new FinalResultsPublishedPost();
+
+    $pairings = [[[
+        'round' => 4,
+        'board' => 1,
+        'white_id' => 1,
+        'white_name' => 'Max',
+        'white_points' => '0.0',
+        'black_id' => 2,
+        'black_name' => 'Anna',
+        'black_points' => '0.0',
+        'result' => '1-0',
+    ]]];
+
+    $result = $output->createFinalResultsNews([], [], $pairings, 'Stadtmeisterschaft 2026');
+
+    expect($result)->toBeInstanceOf(WP_Error::class);
+    expect($result->get_error_code())->toBe('final_results_round_too_low');
+    expect($GLOBALS['wp_inserted'])->toHaveCount(0);
+    expect($GLOBALS['wp_updated'])->toHaveCount(0);
 });
