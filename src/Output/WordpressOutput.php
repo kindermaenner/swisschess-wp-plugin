@@ -17,7 +17,7 @@ class WordpressOutput
         }
 
         // Tabellenkopf
-        $html  = '<table>';
+        $html  = '<table class="swiss-participants">';
         $html .= '<thead>';
         $html .= '<tr>';
         $html .= '<th>Nr</th>';
@@ -57,20 +57,21 @@ class WordpressOutput
             return '<p>Keine Ranglistendaten vorhanden.</p>';
         }
 
-        $html  = '<table>';
+        $html  = '<div class="swiss-ranking-scroll">';
+        $html .= '<table class="swiss-ranking">';
         $html .= '<thead>';
         $html .= '<tr>';
-        $html .= '<th>Rang</th>';
+        $html .= '<th><span class="full">Rang</span><span class="short">RG</span></th>';
         $html .= '<th>Name</th>';
         $html .= '<th>Titel</th>';
         $html .= '<th>TWZ</th>';
         $html .= '<th>Geschlecht</th>';
         $html .= '<th>Punkte</th>';
-        $html .= '<th>Siege</th>';
-        $html .= '<th>Remis</th>';
-        $html .= '<th>Niederl.</th>';
-        $html .= '<th>Buchholz</th>';
-        $html .= '<th>Sonneborn</th>';
+        $html .= '<th><span class="full">Siege</span><span class="short">S</span></th>';
+        $html .= '<th><span class="full">Remis</span><span class="short">R</span></th>';
+        $html .= '<th><span class="full">Niederlagen</span><span class="short">N</span></th>';
+        $html .= '<th><span class="full">Buchholz</span><span class="short">BH</span></th>';
+        $html .= '<th><span class="full">Sonneborn</span><span class="short">SB</span></th>';
         $html .= '<th>Verein</th>';
         $html .= '<th>Land</th>';
         $html .= '</tr>';
@@ -97,6 +98,7 @@ class WordpressOutput
 
         $html .= '</tbody>';
         $html .= '</table>';
+        $html .= '</div>';
 
         return $html;
     }
@@ -122,7 +124,7 @@ class WordpressOutput
             $html .= '<table class="swiss-pairings">';
             $html .= '<thead>';
             $html .= '<tr>';
-            $html .= '<th>Tisch</th>';
+            $html .= '<th><span class="full">Brett</span><span class="short">Br</span></th>';
             $html .= '<th>TNr</th>';
             $html .= '<th>Teilnehmer</th>';
             $html .= '<th>Punkte</th>';
@@ -130,7 +132,7 @@ class WordpressOutput
             $html .= '<th>TNr</th>';
             $html .= '<th>Teilnehmer</th>';
             $html .= '<th>Punkte</th>';
-            $html .= '<th>Ergebnis</th>';
+            $html .= '<th><span class="full">Ergebnis</span><span class="short">Erg</span></th>';
             $html .= '</tr>';
             $html .= '</thead>';
             $html .= '<tbody>';
