@@ -52,6 +52,8 @@ class StaticTournamentPage extends WordpressOutput {
         if ($existing) {
             // Update bestehende Seite
             $page_id = $existing[0]->ID;
+            $existingYear = (int)get_post_meta((int)$page_id, '_stadtmeisterschaft_year', true);
+            $year = $existingYear > 0 ? $existingYear : $this->getCurrentYear();
 
             wp_update_post([
                 'ID'           => $page_id,
@@ -68,6 +70,8 @@ class StaticTournamentPage extends WordpressOutput {
 
             return $page_id;
         }
+
+        $year = $this->resolveYearFromTournamentName($tournament_name);
 
         // 6. Neue Seite erstellen
         $page_id = wp_insert_post([
@@ -88,6 +92,31 @@ class StaticTournamentPage extends WordpressOutput {
         $this->removePageFromMenus((int)$page_id);
 
         return $page_id;
+    }
+
+    private function resolveYearFromTournamentName(string $tournamentName): int
+    {
+        if (preg_match('/\b(19|20)\d{2}\b/', $tournamentName, $matches) === 1) {
+            $parsedYear = (int)$matches[0];
+            if ($parsedYear >= 1900 && $parsedYear <= 2099) {
+                return $parsedYear;
+            }
+        }
+
+        return $this->getCurrentYear();
+    }
+
+    private function getCurrentYear(): int
+    {
+        if (function_exists('wp_date')) {
+            return (int)wp_date('Y');
+        }
+
+        if (function_exists('date_i18n')) {
+            return (int)date_i18n('Y');
+        }
+
+        return (int)date('Y');
     }
 
     private function removePageFromMenus(int $pageId): void

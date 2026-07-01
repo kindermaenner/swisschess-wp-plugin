@@ -57,7 +57,7 @@ class SwissChessRunner
                 $warnings[] = $nextRoundResult->get_error_message();
             }
         }
-
+ 
         // 2) Alle Runden fertig → Gesamtergebnis veröffentlichen
         if ($this->allRoundsComplete($this->pairings)) {
             $finalResultsPost = new FinalResultsPublishedPost();

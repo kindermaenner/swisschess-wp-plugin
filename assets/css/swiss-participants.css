@@ -1,0 +1,19 @@
+@media (max-width: 600px) {
+  /* Handy: Spalte Titel ausblenden */
+  table.swiss-participants th:nth-child(3),
+  table.swiss-participants td:nth-child(3)  {
+    display: none;
+  }
+
+  /* Handy: Spalte Geschlecht ausblenden */
+  table.swiss-participants th:nth-child(5),
+  table.swiss-participants td:nth-child(5)  {
+    display: none;
+  }
+
+  /* Handy: Spalte Land ausblenden */
+  table.swiss-participants th:nth-child(7),
+  table.swiss-participants td:nth-child(7)  {
+    display: none;
+  }
+}

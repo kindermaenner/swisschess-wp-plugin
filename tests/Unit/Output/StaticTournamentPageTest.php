@@ -94,7 +94,7 @@ it('creates a new static page when none exists', function () {
 
     $insert = $GLOBALS['wp_inserted'][0];
 
-    expect($insert['post_title'])->toBe('stadtmeisterschaft-2026');
+    expect($insert['post_title'])->toBe('Stadtmeisterschaft 2026');
     expect($insert['post_name'])->toBe('stadtmeisterschaft-2026');
 
     $metaKey = '_stadtmeisterschaft-2026_static_page';
@@ -175,7 +175,7 @@ it('updates an existing static page when meta key exists', function () {
     $update = $GLOBALS['wp_updated'][0];
 
     expect($update['ID'])->toBe(500);
-    expect($update['post_title'])->toBe('stadtmeisterschaft-2026');
+    expect($update['post_title'])->toBe('Stadtmeisterschaft 2026');
     expect($update['post_name'])->toBe('stadtmeisterschaft-2026');
 
     expect($update['post_content'])->toContain('Stadtmeisterschaft 2026');

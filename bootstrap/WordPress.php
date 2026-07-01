@@ -368,3 +368,12 @@ if (!function_exists('wp_set_post_terms')) {
         return $GLOBALS['wp_set_terms'][$post_id][$taxonomy];
     }
 }
+
+if (!function_exists('plugin_dir_path')) {
+    function plugin_dir_path($file) {
+        // Plugin-Root: eine Ebene über /tests/
+        return dirname(__DIR__) . '/';
+    }
+}
+
+define('SWISSCHESS_PLUGIN_PATH', plugin_dir_path(__FILE__));

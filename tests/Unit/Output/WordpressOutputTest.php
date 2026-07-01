@@ -38,7 +38,7 @@ it('renders participants table correctly', function () {
         ]
     ]);
 
-    expect($html)->toContain('<table>');
+    expect($html)->toContain('<table class="swiss-participants">');
     expect($html)->toContain('<td>1</td>');
     expect($html)->toContain('<td>Max Mustermann</td>');
     expect($html)->toContain('<td>GM</td>');

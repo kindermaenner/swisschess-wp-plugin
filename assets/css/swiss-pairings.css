@@ -1,0 +1,80 @@
+table.swiss-pairings {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* stabiler als grid */
+}
+
+table.swiss-pairings th,
+table.swiss-pairings td {
+  padding: 0.4em 0.6em;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+/* grauer Trenner */
+table.swiss-pairings th.separator,
+table.swiss-pairings td.separator {
+  background: #ddd;
+  width: 2%;
+}
+
+/* symmetrische Spaltenbreiten */
+table.swiss-pairings th:nth-child(1),
+table.swiss-pairings td:nth-child(1) { width: 6%; }  /* Tisch */
+table.swiss-pairings th:nth-child(2),
+table.swiss-pairings td:nth-child(2) { width: 6%; }  /* TNr links */
+table.swiss-pairings th:nth-child(3),
+table.swiss-pairings td:nth-child(3) { width: 20%; } /* Teilnehmer links */
+table.swiss-pairings th:nth-child(4),
+table.swiss-pairings td:nth-child(4) { width: 8%; }  /* Punkte links */
+table.swiss-pairings th:nth-child(6),
+table.swiss-pairings td:nth-child(6) { width: 6%; }  /* TNr rechts */
+table.swiss-pairings th:nth-child(7),
+table.swiss-pairings td:nth-child(7) { width: 20%; } /* Teilnehmer rechts */
+table.swiss-pairings th:nth-child(8),
+table.swiss-pairings td:nth-child(8) { width: 8%; }  /* Punkte rechts */
+table.swiss-pairings th:nth-child(9),
+table.swiss-pairings td:nth-child(9) { width: 8%; }  /* Ergebnis */
+
+/* Desktop: lange Überschriften */
+table.swiss-pairings th .full {
+  display: inline;
+}
+table.swiss-pairings th .short {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  /* Mobil: kurze Überschriften */
+  table.swiss-pairings th .full {
+    display: none;
+  }
+  table.swiss-pairings th .short {
+    display: inline;
+    white-space: nowrap;
+  }
+
+  /* TNr links */
+  table.swiss-pairings th:nth-child(2),
+  table.swiss-pairings td:nth-child(2) {
+    display: none;
+  }
+
+  /* Punkte links */
+  table.swiss-pairings th:nth-child(4),
+  table.swiss-pairings td:nth-child(4) {
+    display: none;
+  }
+
+  /* TNr rechts */
+  table.swiss-pairings th:nth-child(6),
+  table.swiss-pairings td:nth-child(6) {
+    display: none;
+  }
+
+  /* Punkte rechts */
+  table.swiss-pairings th:nth-child(8),
+  table.swiss-pairings td:nth-child(8) {
+    display: none;
+  }
+}

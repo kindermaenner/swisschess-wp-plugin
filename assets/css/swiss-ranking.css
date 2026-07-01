@@ -1,0 +1,68 @@
+/* Standard: Desktop zeigt Langnamen */
+table.swiss-ranking th .full {
+  display: inline;
+}
+table.swiss-ranking th .short {
+  display: none;
+}
+@media (max-width: 600px) {
+  table.swiss-ranking th .full {
+    display: none;
+  }
+  table.swiss-ranking th .short {
+    display: inline;
+    white-space: nowrap;
+  }
+  /* Scroll-Container */
+  .swiss-ranking-scroll {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .swiss-ranking-scroll table {
+    width: max-content;
+  }
+
+  .swiss-ranking {
+    border-collapse: collapse;
+  }
+
+  /* Sticky zuerst */
+  .swiss-ranking th:nth-child(1),
+  .swiss-ranking td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    background: #fff;
+    z-index: 3;
+    white-space: nowrap;
+    transform: translateZ(0);
+  }
+
+  .swiss-ranking th:nth-child(2),
+  .swiss-ranking td:nth-child(2) {
+    position: sticky;
+    left: 37px;
+    background: #fff;
+    z-index: 3;
+    white-space: nowrap;
+    transform: translateZ(0);
+  }
+
+  /* Jetzt erst Spalten ausblenden */
+  .swiss-ranking th:nth-child(3),
+  .swiss-ranking td:nth-child(3),
+  .swiss-ranking th:nth-child(4),
+  .swiss-ranking td:nth-child(4),
+  .swiss-ranking th:nth-child(5),
+  .swiss-ranking td:nth-child(5),
+  .swiss-ranking th:nth-child(12),
+  .swiss-ranking td:nth-child(12),
+  .swiss-ranking th:nth-child(13),
+  .swiss-ranking td:nth-child(13) {
+    display: none;
+  }
+}
+
