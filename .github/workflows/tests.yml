@@ -33,13 +33,18 @@ jobs:
       - name: Run Pest tests with coverage
         run: vendor/bin/pest --coverage --coverage-clover=coverage.xml --min=80
 
+      - name: Install SonarScanner
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          version: latest
+
       - name: SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=wuerfelmeister-php \
+            -Dsonar.projectKey=swisschess-wp-plugin \
             -Dsonar.sources=src \
             -Dsonar.php.coverage.reportPaths=coverage.xml \
             -Dsonar.tests=tests \
