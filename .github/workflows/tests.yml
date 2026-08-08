@@ -33,10 +33,12 @@ jobs:
       - name: Run Pest tests with coverage
         run: vendor/bin/pest --coverage --coverage-clover=coverage.xml --min=80
 
-      - name: Install SonarScanner
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          version: latest
+      - name: Install SonarScanner CLI
+        run: |
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner-cli-5.0.1.3006-linux.zip
+          sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
+          echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
 
       - name: SonarQube Scan
         env:
