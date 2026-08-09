@@ -40,6 +40,7 @@ class StaticTournamentPage extends WordpressOutput {
 
         // 4. Meta-Key erzeugen
         $meta_key = '_' . $slug . '_static_page';
+        $meta_key_year = '_stadtmeisterschaft_year';
 
         // 5. Prüfen, ob Seite existiert
         $existing = get_posts([
@@ -52,7 +53,7 @@ class StaticTournamentPage extends WordpressOutput {
         if ($existing) {
             // Update bestehende Seite
             $page_id = $existing[0]->ID;
-            $existingYear = (int)get_post_meta((int)$page_id, '_stadtmeisterschaft_year', true);
+            $existingYear = (int)get_post_meta((int)$page_id, $meta_key_year, true);
             $year = $existingYear > 0 ? $existingYear : $this->getCurrentYear();
 
             wp_update_post([
@@ -66,7 +67,7 @@ class StaticTournamentPage extends WordpressOutput {
             $this->removePageFromMenus((int)$page_id);
 
             update_post_meta($page_id, $meta_key, '1');
-            update_post_meta($page_id, '_stadtmeisterschaft_year', $year);
+            update_post_meta($page_id, $meta_key_year, $year);
 
             return $page_id;
         }
@@ -87,7 +88,7 @@ class StaticTournamentPage extends WordpressOutput {
 
         // 7. Meta-Key setzen
         update_post_meta($page_id, $meta_key, '1');
-        update_post_meta($page_id, '_stadtmeisterschaft_year', $year);
+        update_post_meta($page_id, $meta_key_year, $year);
 
         $this->removePageFromMenus((int)$page_id);
 

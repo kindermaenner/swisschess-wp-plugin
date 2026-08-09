@@ -269,9 +269,6 @@ class SwissChessRunner
         $index = $this->buildParticipantIndexByTwz($participants);
 
         foreach ($ranking as &$r) {
-
-            $key = $r['twz'] . '|' . strtolower($r['name']);
-
             // Wenn SwissChess den Namen abgeschnitten hat
             foreach ($index as $idxKey => $fullName) {
                 // Match: gleiche TWZ + abgeschnittener Anfang
@@ -304,7 +301,7 @@ class SwissChessRunner
     {
         foreach ($files as $file) {
             if (is_file($file)) {
-                @unlink($file);
+                unlink($file);
             }
         }
     }

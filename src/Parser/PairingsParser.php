@@ -61,7 +61,7 @@ class PairingsParser extends SwissChessParser
         $clean = strtolower($clean);
 
         // Runde extrahieren
-        if (preg_match('/paarungsliste[^0-9]*([0-9]+)\.?[^0-9]*runde/', $clean, $m)) {
+        if (preg_match('/paarungsliste\D*(\d+)\.?\D*runde/', $clean, $m)) {
             return (int)$m[1];
         }
 

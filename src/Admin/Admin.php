@@ -124,7 +124,7 @@ class Admin {
         // Dateien nach Import löschen
         echo '<tr><th scope="row">Dateien nach Import löschen</th><td>';
         echo '<label>';
-        echo '<input type="checkbox" name="swisschess_delete_after_import" value="1" ' . checked(1, get_option('swisschess_delete_after_import'), false) . '>';
+        echo '<input type="checkbox" name="swisschess_delete_after_import" value="1" ' . checked(1, $delete_after_import, false) . '>';
         echo ' Nach erfolgreichem Import die HTML‑Dateien löschen';
         echo '</label>';
         echo '<p class="description">Wenn aktiviert, werden die eingelesenen Swiss‑Chess‑Dateien nach dem Import entfernt.</p>';
