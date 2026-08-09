@@ -10,6 +10,7 @@ class SwissChessRunnerScenarioTester extends SwissChessRunner
 {
     public function __construct(private string $dataDir)
     {
+        parent::__construct();
     }
 
     protected function findFiles(): array

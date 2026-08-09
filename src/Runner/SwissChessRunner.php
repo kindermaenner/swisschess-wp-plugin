@@ -65,6 +65,10 @@ class SwissChessRunner
             }
         }
 
+        if ($this->shouldPublishNextRound($this->pairings) && empty($warnings) && trim((string)get_option('swisschess_template_next_round_post', '')) === '') {
+            $warnings[] = 'Kein Template in swisschess_template_next_round_post definiert.';
+        }
+
         // 2) Alle Runden fertig → Gesamtergebnis veröffentlichen
         if ($this->allRoundsComplete($this->pairings)) {
             $finalResultsPost = new FinalResultsPublishedPost();

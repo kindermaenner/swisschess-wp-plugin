@@ -10,6 +10,7 @@ class SwissChessRunnerRunTester extends SwissChessRunner
 {
     public function __construct(private array $files, private array $fixture)
     {
+        parent::__construct();
     }
 
     protected function findFiles(): array
@@ -22,8 +23,11 @@ class SwissChessRunnerRunTester extends SwissChessRunner
         $ref = new \ReflectionClass(SwissChessRunner::class);
 
         foreach (['participants', 'ranking', 'pairings', 'tournament_name'] as $prop) {
+            if (!$ref->hasProperty($prop)) {
+                continue;
+            }
+
             $property = $ref->getProperty($prop);
-            $property->setAccessible(true);
             $property->setValue($this, $this->fixture[$prop]);
         }
     }
