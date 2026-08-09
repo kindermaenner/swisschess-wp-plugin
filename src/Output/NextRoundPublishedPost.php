@@ -61,15 +61,13 @@ class NextRoundPublishedPost extends PublishedPostOutput {
 
         $content = str_replace(array_keys($replacements), array_values($replacements), $templateContent);
 
-        $postId = $this->createOrUpdatePostFromTemplate(
+        return $this->createOrUpdatePostFromTemplate(
             $title,
             $postSlug,
             $metaKey,
             $content,
             (int)$templatePage->ID
         );
-
-        return $postId;
     }
 
     private function detectMaxRoundNumber(array $pairings): int

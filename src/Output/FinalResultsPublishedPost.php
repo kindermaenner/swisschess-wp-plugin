@@ -49,15 +49,13 @@ class FinalResultsPublishedPost extends PublishedPostOutput
         $postSlug = sanitize_title(str_replace(' ', '-', $tournamentLabel . '-turnier-beendet'));
         $metaKey = '_' . $postSlug . '_final_results_post';
 
-        $postId = $this->createOrUpdatePostFromTemplate(
+        return $this->createOrUpdatePostFromTemplate(
             $title,
             $postSlug,
             $metaKey,
             $content,
             (int)$templatePost->ID
         );
-
-        return $postId;
     }
 
     private function detectLastRound(array $pairings): int
