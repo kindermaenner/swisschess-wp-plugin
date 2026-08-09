@@ -48,7 +48,7 @@ class WordpressOutput
             $html .= '<td>' . esc_html($p['country']) . '</td>';
             $html .= '</tr>';
         }
-                
+
         $html .= '</tbody>';
         $html .= '</table>';
 
@@ -200,7 +200,7 @@ class WordpressOutput
             '_menu_item_type',
             '_menu_item_url',
         ];
-        
+
         $all_meta = get_post_meta($from_page_id);
 
         foreach ($all_meta as $key => $values) {

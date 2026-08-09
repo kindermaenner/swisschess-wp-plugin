@@ -34,7 +34,7 @@ class Admin {
         );
     }
 
-    public static function render_settings_page() { 
+    public static function render_settings_page() {
 
         // Aktuelle Werte laden
         $author    = get_option('swisschess_author', '');

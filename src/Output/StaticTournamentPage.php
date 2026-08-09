@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SwissChess\Output;
 
 class StaticTournamentPage extends WordpressOutput {
-    
+
     public function createOrUpdateStaticPage(array $participants, array $ranking, array $pairings, string $tournament_name): int|\WP_Error
     {
         // 1. Template laden
