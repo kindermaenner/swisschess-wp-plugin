@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SwissChess\Output;
 
-class FinalResultsPublishedPost extends WordpressOutput
+class FinalResultsPublishedPost extends PublishedPostOutput
 {
     public function createFinalResultsNews(array $participants, array $ranking, array $pairings, string $tournament_name = ''): int|\WP_Error
     {
@@ -49,43 +49,13 @@ class FinalResultsPublishedPost extends WordpressOutput
         $postSlug = sanitize_title(str_replace(' ', '-', $tournamentLabel . '-turnier-beendet'));
         $metaKey = '_' . $postSlug . '_final_results_post';
 
-        $existing = get_posts([
-            'post_type' => 'post',
-            'meta_key' => $metaKey,
-            'meta_value' => '1',
-            'numberposts' => 1,
-        ]);
-
-        if ($existing) {
-            $postId = (int)$existing[0]->ID;
-
-            wp_update_post([
-                'ID' => $postId,
-                'post_title' => $title,
-                'post_name' => $postSlug,
-                'post_content' => $content,
-                'post_status' => 'publish',
-                'post_author' => get_option('swisschess_author') ?: 1,
-            ]);
-        } else {
-            $postId = wp_insert_post([
-                'post_title' => $title,
-                'post_name' => $postSlug,
-                'post_content' => $content,
-                'post_status' => 'publish',
-                'post_type' => 'post',
-                'post_author' => get_option('swisschess_author') ?: 1,
-            ]);
-
-            if ($postId > 0) {
-                update_post_meta($postId, $metaKey, '1');
-            }
-        }
-
-        if ($postId > 0) {
-            $this->copyAllMeta((int)$templatePost->ID, $postId);
-            $this->copyCategoriesWithoutTemplateCategory((int)$templatePost->ID, $postId);
-        }
+        $postId = $this->createOrUpdatePostFromTemplate(
+            $title,
+            $postSlug,
+            $metaKey,
+            $content,
+            (int)$templatePost->ID
+        );
 
         return $postId;
     }
@@ -110,36 +80,4 @@ class FinalResultsPublishedPost extends WordpressOutput
         return $maxRound;
     }
 
-    private function resolveTemplatePost(string $templateName)
-    {
-        if ($templateName === '') {
-            return null;
-        }
-
-        $templatePost = get_page_by_title($templateName, OBJECT, 'page');
-        if ($templatePost) {
-            return $templatePost;
-        }
-
-        $templatePost = get_page_by_title($templateName, OBJECT, 'post');
-        if ($templatePost) {
-            return $templatePost;
-        }
-
-        if (function_exists('get_page_by_path')) {
-            $slug = sanitize_title($templateName);
-
-            $templatePost = get_page_by_path($slug, OBJECT, 'page');
-            if ($templatePost) {
-                return $templatePost;
-            }
-
-            $templatePost = get_page_by_path($slug, OBJECT, 'post');
-            if ($templatePost) {
-                return $templatePost;
-            }
-        }
-
-        return null;
-    }
 }

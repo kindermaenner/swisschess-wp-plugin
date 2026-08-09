@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SwissChess\Output;
 
-class NextRoundPublishedPost extends WordpressOutput {
+class NextRoundPublishedPost extends PublishedPostOutput {
 
     public function createNextRoundNews(array $pairings, string $tournament_name = ''): int|\WP_Error
     {
@@ -61,43 +61,13 @@ class NextRoundPublishedPost extends WordpressOutput {
 
         $content = str_replace(array_keys($replacements), array_values($replacements), $templateContent);
 
-        $existing = get_posts([
-            'post_type' => 'post',
-            'meta_key' => $metaKey,
-            'meta_value' => '1',
-            'numberposts' => 1,
-        ]);
-
-        if ($existing) {
-            $postId = (int)$existing[0]->ID;
-
-            wp_update_post([
-                'ID' => $postId,
-                'post_title' => $title,
-                'post_name' => $postSlug,
-                'post_content' => $content,
-                'post_status' => 'publish',
-                'post_author' => get_option('swisschess_author') ?: 1,
-            ]);
-        } else {
-            $postId = wp_insert_post([
-                'post_title'   => $title,
-                'post_name'    => $postSlug,
-                'post_content' => $content,
-                'post_status'  => 'publish',
-                'post_type'    => 'post',
-                'post_author'  => get_option('swisschess_author') ?: 1,
-            ]);
-
-            if ($postId > 0) {
-                update_post_meta($postId, $metaKey, '1');
-            }
-        }
-
-        if ($templatePage && $postId > 0) {
-            $this->copyAllMeta((int)$templatePage->ID, $postId);
-            $this->copyCategoriesWithoutTemplateCategory((int)$templatePage->ID, $postId);
-        }
+        $postId = $this->createOrUpdatePostFromTemplate(
+            $title,
+            $postSlug,
+            $metaKey,
+            $content,
+            (int)$templatePage->ID
+        );
 
         return $postId;
     }
@@ -131,39 +101,4 @@ class NextRoundPublishedPost extends WordpressOutput {
         return [];
     }
 
-    private function resolveTemplatePost(string $templateName)
-    {
-        if ($templateName === '') {
-            return null;
-        }
-
-        // 1) Exakte Titel-Suche fuer Seiten und Beitraege getrennt.
-        // get_page_by_title erwartet in WP einen einzelnen post_type, kein Array.
-        $templatePost = get_page_by_title($templateName, OBJECT, 'page');
-        if ($templatePost) {
-            return $templatePost;
-        }
-
-        $templatePost = get_page_by_title($templateName, OBJECT, 'post');
-        if ($templatePost) {
-            return $templatePost;
-        }
-
-        // 2) Fallback ueber Slug/Pfad, ebenfalls getrennt nach Typ.
-        if (function_exists('get_page_by_path')) {
-            $slug = sanitize_title($templateName);
-
-            $templatePost = get_page_by_path($slug, OBJECT, 'page');
-            if ($templatePost) {
-                return $templatePost;
-            }
-
-            $templatePost = get_page_by_path($slug, OBJECT, 'post');
-            if ($templatePost) {
-                return $templatePost;
-            }
-        }
-
-        return null;
-    }
 }
