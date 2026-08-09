@@ -1,5 +1,10 @@
 # SwissChess WordPress Plugin
 
+![Coverage](https://raw.githubusercontent.com/kindermaenner/sonar-badges/main/badges/swisschess-wp-plugin/coverage.svg)
+![Bugs](https://raw.githubusercontent.com/kindermaenner/sonar-badges/main/badges/swisschess-wp-plugin/bugs.svg)
+![Code Smells](https://raw.githubusercontent.com/kindermaenner/sonar-badges/main/badges/swisschess-wp-plugin/code_smells.svg)
+![Security Hotspots](https://raw.githubusercontent.com/kindermaenner/sonar-badges/main/badges/swisschess-wp-plugin/security_hotspots.svg)
+
 SwissChess is a WordPress plugin that scans a folder for SwissChess HTML exports and turns them into WordPress content with configurable templates.
 
 It currently creates and updates three kinds of output:
