@@ -8,11 +8,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Admin {
-
-    public static function init() {
+class Admin
+{
+    public static function init()
+    {
         add_action('admin_menu', [self::class, 'register_menu']);
-        add_action('admin_init', function() {
+        add_action('admin_init', function () {
             register_setting('swisschess', 'swisschess_author');
             register_setting('swisschess', 'swisschess_template_static_page');
             register_setting('swisschess', 'swisschess_template_next_round_post');
@@ -22,7 +23,8 @@ class Admin {
         });
     }
 
-    public static function register_menu() {
+    public static function register_menu()
+    {
         add_menu_page(
             'Swiss Chess',
             'Swiss Chess',
@@ -34,7 +36,8 @@ class Admin {
         );
     }
 
-    public static function render_settings_page() {
+    public static function render_settings_page()
+    {
 
         // Aktuelle Werte laden
         $author    = get_option('swisschess_author', '');
@@ -45,7 +48,6 @@ class Admin {
         $delete_after_import = get_option('swisschess_delete_after_import', false);
         // Wenn "Neuen Key generieren" gedrückt wurde (eigenes Formular!)
         if (isset($_POST['swisschess_generate_key'])) {
-
             check_admin_referer('swisschess_generate_key_action');
 
             $new_key = wp_generate_password(32, false, false);

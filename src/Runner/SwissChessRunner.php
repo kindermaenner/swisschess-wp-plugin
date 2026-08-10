@@ -48,7 +48,7 @@ class SwissChessRunner
                 'success' => false,
                 'message' => $post_id->get_error_message(),
                 'error_code' => $post_id->get_error_code(),
-                'participants'=> $this->participants,
+                'participants' => $this->participants,
                 'ranking'     => $this->ranking,
                 'pairings'    => $this->pairings,
                 'warnings'    => $warnings,
@@ -91,7 +91,7 @@ class SwissChessRunner
         return [
             'success'     => true,
             'post_id'     => $post_id,
-            'participants'=> $this->participants,
+            'participants' => $this->participants,
             'ranking'     => $this->ranking,
             'pairings'    => $this->pairings,
             'warnings'    => $warnings,
@@ -160,5 +160,4 @@ class SwissChessRunner
     {
         $this->importer->cleanupImportedFiles($files);
     }
-
 }

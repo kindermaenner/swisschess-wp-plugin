@@ -77,5 +77,4 @@ class FinalResultsPublishedPost extends PublishedPostOutput
 
         return $maxRound;
     }
-
 }

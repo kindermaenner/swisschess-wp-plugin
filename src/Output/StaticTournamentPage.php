@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SwissChess\Output;
 
-class StaticTournamentPage extends WordpressOutput {
-
+class StaticTournamentPage extends WordpressOutput
+{
     public function createOrUpdateStaticPage(array $participants, array $ranking, array $pairings, string $tournament_name): int|\WP_Error
     {
         // 1. Template laden
@@ -47,7 +47,7 @@ class StaticTournamentPage extends WordpressOutput {
             'post_type'  => 'page',
             'meta_key'   => $meta_key,
             'meta_value' => '1',
-            'numberposts'=> 1,
+            'numberposts' => 1,
         ]);
 
         if ($existing) {
@@ -122,9 +122,11 @@ class StaticTournamentPage extends WordpressOutput {
 
     private function removePageFromMenus(int $pageId): void
     {
-        if (!function_exists('wp_get_nav_menus')
+        if (
+            !function_exists('wp_get_nav_menus')
             || !function_exists('wp_get_nav_menu_items')
-            || !function_exists('wp_delete_post')) {
+            || !function_exists('wp_delete_post')
+        ) {
             return;
         }
 

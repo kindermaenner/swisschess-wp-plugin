@@ -10,13 +10,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Api {
-
-    public static function init() {
+class Api
+{
+    public static function init()
+    {
         add_action('rest_api_init', [self::class, 'register_routes']);
     }
 
-    public static function register_routes() {
+    public static function register_routes()
+    {
 
         register_rest_route('swisschess/v1', '/scan', [
             'methods'  => ['POST', 'GET'],
@@ -25,7 +27,8 @@ class Api {
         ]);
     }
 
-    public static function verify_api_key($request) {
+    public static function verify_api_key($request)
+    {
         $api_key = get_option('swisschess_api_key');
 
         // Header-Variante (App)
@@ -57,7 +60,8 @@ class Api {
     }
 
 
-    public static function scan($request) {
+    public static function scan($request)
+    {
         $runner = new SwissChessRunner();
 
         return rest_ensure_response([

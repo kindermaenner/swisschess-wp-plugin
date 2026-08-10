@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SwissChess\Output;
 
-class NextRoundPublishedPost extends PublishedPostOutput {
-
+class NextRoundPublishedPost extends PublishedPostOutput
+{
     public function createNextRoundNews(array $pairings, string $tournament_name = ''): int|\WP_Error
     {
         if (empty($pairings)) {
@@ -98,5 +98,4 @@ class NextRoundPublishedPost extends PublishedPostOutput {
 
         return [];
     }
-
 }

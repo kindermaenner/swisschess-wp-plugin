@@ -128,7 +128,6 @@ class WordpressOutput
         $html  = "<style>\n" . $css . "\n</style>\n";
 
         foreach ($pairings as $roundPairings) {
-
             if (empty($roundPairings)) {
                 continue;
             }
@@ -154,7 +153,6 @@ class WordpressOutput
             $html .= '<tbody>';
 
             foreach ($roundPairings as $p) {
-
                 $html .= '<tr>';
 
                 // Brett
@@ -204,7 +202,6 @@ class WordpressOutput
         $all_meta = get_post_meta($from_page_id);
 
         foreach ($all_meta as $key => $values) {
-
             // WP interne Keys überspringen
             if (in_array($key, $blacklist_meta, true)) {
                 continue;

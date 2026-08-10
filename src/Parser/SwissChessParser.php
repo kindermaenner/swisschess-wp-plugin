@@ -66,5 +66,4 @@ class SwissChessParser
 
         return $text;
     }
-
 }
