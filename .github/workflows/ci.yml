@@ -4,7 +4,11 @@ on:
   push:
     branches: [ main, develop ]
   pull_request:
-  workflow_dispatch:  
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -29,7 +33,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-  sonar-badges:
+  update-badges:
     needs: sonar
     if: github.ref == 'refs/heads/main'
     uses: kindermaenner/ci-templates/.github/workflows/common-badge-trigger.yml@main
