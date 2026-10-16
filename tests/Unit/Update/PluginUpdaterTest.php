@@ -204,7 +204,7 @@ test('returns plugin information only for this plugin', function () {
 test('clears its update manifest cache after plugin updates', function () {
     swissChessCacheManifest(swissChessManifest());
 
-    $this->updater->clearCache(new stdClass(), ['action' => 'update', 'type' => 'plugin']);
+    $this->updater->clearCache(['action' => 'update', 'type' => 'plugin']);
     expect($GLOBALS['wp_site_transients'])->toBeEmpty();
     expect($GLOBALS['wp_deleted_site_transients'])->toBe(['swisschess_plugin_update']);
 });

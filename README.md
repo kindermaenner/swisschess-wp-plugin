@@ -5,12 +5,12 @@
 ![Code Smells](https://raw.githubusercontent.com/kindermaenner/sonar-badges/main/badges/swisschess-wp-plugin/code_smells.svg)
 ![Security Hotspots](https://raw.githubusercontent.com/kindermaenner/sonar-badges/main/badges/swisschess-wp-plugin/security_hotspots.svg)
 
-SwissChess is a WordPress plugin that scans a folder for SwissChess HTML exports and turns them into WordPress content with configurable templates.
+swisschess-wp-plugin is a WordPress plugin that scans a folder for SwissChess HTML exports and turns them into WordPress content with configurable templates.
 
 It currently creates and updates three kinds of output:
 
-1. A static tournament page
-2. A post for a newly drawn round
+1. A static tournament page (example see [Stadtmeisterschaft 2026](https://sg-koenigslutter.de/stadtmeisterschaft-koenigslutter-2026/))
+2. A post for a newly drawn round (example see [Stadtmeisterschaft 2026 Runde 2](https://sg-koenigslutter.de/2026/06/14/stadtmeisterschaft-koenigslutter-2026-runde-2-ausgelost/))
 3. A post with the final tournament results
 
 ## How It Works
@@ -29,7 +29,7 @@ wp-content/uploads/swisschess
 
 ## Installation
 
-1. Download the latest SwissChess ZIP:
+1. Download the latest swisschess-wp-plugin ZIP:
 
    ```text
    https://kindermaenner.de/plugin-updates/swisschess/latest/swisschess-wp-plugin.zip
@@ -43,13 +43,11 @@ wp-content/uploads/swisschess
 
 ### Updates
 
-New releases are offered through the WordPress plugin updater. To check manually, open **Dashboard → Updates** (or **Plugins → Installed Plugins**) and check for updates. When a SwissChess update is available, choose **Update now**. Back up the site before updating, as with any plugin.
-
-Versioned releases are also available at `https://kindermaenner.de/plugin-updates/swisschess/versions/`. Each release ZIP includes the production dependencies required by the plugin.
+New releases are offered through the WordPress plugin updater. To check manually, open **Dashboard → Updates** (or **Plugins → Installed Plugins**) and check for updates. When a swisschess-wp-plugin update is available, choose **Update now**. Back up the site before updating, as with any plugin.
 
 ## Configuration
 
-The following settings are available in the admin page:
+The plugin adds a new menu point "Swiss Chess" in the admin dashboard. The following settings are available there:
 
 | Setting | Description |
 | --- | --- |
@@ -59,6 +57,8 @@ The following settings are available in the admin page:
 | `swisschess_template_final_results_post` | Template post used for the final results post |
 | `swisschess_api_key` | API key used to secure the REST endpoint |
 | `swisschess_delete_after_import` | Deletes imported HTML files after a successful scan |
+
+It is recommended NOT to use an administrator account as swisschess_author.
 
 ## Output Rules
 
@@ -209,5 +209,5 @@ Useful test areas:
 
 - The plugin scans the default SwissChess import folder under the WordPress uploads directory.
 - Generated posts are reused when the corresponding marker meta key already exists.
-- Template posts/pages are meant to define the layout; SwissChess fills the placeholders and copies the relevant template data.
+- Template posts/pages are meant to define the layout; swisschess-wp-plugin fills the placeholders and copies the relevant template data.
 - When `swisschess_delete_after_import` is enabled, imported HTML files are removed after a successful scan.

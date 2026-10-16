@@ -27,7 +27,9 @@ final class PluginUpdater
         add_filter('site_transient_update_plugins', [$this, 'checkForUpdate']);
         add_filter('plugins_api', [$this, 'pluginInformation'], 20, 3);
         add_filter('upgrader_pre_download', [$this, 'verifyDownload'], 10, 2);
-        add_action('upgrader_process_complete', [$this, 'clearCache'], 10, 2);
+        add_action('upgrader_process_complete', function (...$args): void {
+            $this->clearCache($args[1]);
+        }, 10, 2);
     }
 
     public function checkForUpdate($transient)
@@ -78,7 +80,7 @@ final class PluginUpdater
         ];
     }
 
-    public function clearCache($upgrader, array $options): void
+    public function clearCache(array $options): void
     {
         if (($options['action'] ?? '') === 'update' && ($options['type'] ?? '') === 'plugin') {
             delete_site_transient($this->cacheKey);

@@ -34,13 +34,15 @@ class TournamentDataImporter
                 continue;
             }
 
-            if (str_contains($file, 'teilrang')) {
+            $filename = strtolower(basename($file));
+
+            if (str_contains($filename, 'teilrang')) {
                 $ranking = (new RankingParser())->parseRanking($html);
-            } elseif (str_contains($file, 'teil')) {
+            } elseif (str_contains($filename, 'teil')) {
                 $parser = new ParticipantsParser();
                 $participants = $parser->parseParticipants($html);
                 $tournamentName = $parser->extractTournamentName($html);
-            } elseif (str_contains($file, 'paar')) {
+            } elseif (str_contains($filename, 'paar')) {
                 $pairings[] = (new PairingsParser())->parsePairings($html);
             }
         }
