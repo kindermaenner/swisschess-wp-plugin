@@ -35,6 +35,8 @@ wp-content/uploads/swisschess
 4. Configure the API key, author, and template names.
 5. Put the SwissChess HTML export files into the import folder.
 
+Releases are published from version tags in the `vMAJOR.MINOR.PATCH` format (for example `v1.0.0`). The release workflow packages production dependencies, including `vendor/`, and publishes updates from `https://kindermaenner.de/plugin-updates/swisschess`. Configure the repository's `FTP_HOST`, `FTP_USER`, and `FTP_PASSWORD` Actions secrets before creating the first release tag.
+
 ## Configuration
 
 The following settings are available in the admin page:
