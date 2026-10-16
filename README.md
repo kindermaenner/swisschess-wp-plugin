@@ -29,13 +29,23 @@ wp-content/uploads/swisschess
 
 ## Installation
 
-1. Copy the plugin folder into `wp-content/plugins/swisschess-wp-plugin`.
-2. Activate the plugin in WordPress.
-3. Open the **Swiss Chess** settings page in the WordPress admin.
-4. Configure the API key, author, and template names.
-5. Put the SwissChess HTML export files into the import folder.
+1. Download the latest SwissChess ZIP:
 
-Releases are published from version tags in the `vMAJOR.MINOR.PATCH` format (for example `v1.0.0`). The release workflow packages production dependencies, including `vendor/`, and publishes updates from `https://kindermaenner.de/plugin-updates/swisschess`. Configure the repository's `FTP_HOST`, `FTP_USER`, and `FTP_PASSWORD` Actions secrets before creating the first release tag.
+   ```text
+   https://kindermaenner.de/plugin-updates/swisschess/latest/swisschess-wp-plugin.zip
+   ```
+
+2. In WordPress, open **Plugins → Add New Plugin → Upload Plugin**.
+3. Select the downloaded ZIP, choose **Install Now**, and then **Activate Plugin**.
+4. Open the **Swiss Chess** settings page in the WordPress admin.
+5. Configure the API key, author, and template names.
+6. Put the SwissChess HTML export files into the import folder.
+
+### Updates
+
+New releases are offered through the WordPress plugin updater. To check manually, open **Dashboard → Updates** (or **Plugins → Installed Plugins**) and check for updates. When a SwissChess update is available, choose **Update now**. Back up the site before updating, as with any plugin.
+
+Versioned releases are also available at `https://kindermaenner.de/plugin-updates/swisschess/versions/`. Each release ZIP includes the production dependencies required by the plugin.
 
 ## Configuration
 
@@ -154,13 +164,13 @@ Authentication:
 Example:
 
 ```text
-https://sg-koenigslutter.de/wp-json/swisschess/v1/scan?key=SC_API_KEY
+https://kindermaenner.de/wp-json/swisschess/v1/scan?key=SC_API_KEY
 ```
 
 Example curl call:
 
 ```bash
-curl -X POST "https://sg-koenigslutter.de/wp-json/swisschess/v1/scan?key=SC_API_KEY"
+curl -X POST "https://kindermaenner.de/wp-json/swisschess/v1/scan?key=SC_API_KEY"
 ```
 
 Response shape:

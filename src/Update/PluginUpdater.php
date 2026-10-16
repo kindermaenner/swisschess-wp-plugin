@@ -26,7 +26,7 @@ final class PluginUpdater
 
         add_filter('site_transient_update_plugins', [$this, 'checkForUpdate']);
         add_filter('plugins_api', [$this, 'pluginInformation'], 20, 3);
-        add_filter('upgrader_pre_download', [$this, 'verifyDownload'], 10, 4);
+        add_filter('upgrader_pre_download', [$this, 'verifyDownload'], 10, 2);
         add_action('upgrader_process_complete', [$this, 'clearCache'], 10, 2);
     }
 
@@ -85,7 +85,7 @@ final class PluginUpdater
         }
     }
 
-    public function verifyDownload($reply, string $package, $upgrader, array $hookExtra)
+    public function verifyDownload($reply, string $package)
     {
         if ($reply !== false) {
             return $reply;
@@ -133,17 +133,7 @@ final class PluginUpdater
         }
 
         $manifest = json_decode(wp_remote_retrieve_body($response), true);
-        if (
-            !is_array($manifest)
-            || ($manifest['slug'] ?? '') !== $this->pluginSlug
-            || !is_string($manifest['version'] ?? null)
-            || preg_match('/^\d+\.\d+\.\d+$/D', $manifest['version']) !== 1
-            || !is_string($manifest['download_url'] ?? null)
-            || !is_string($manifest['checksum_sha256'] ?? null)
-            || preg_match('/^[a-f0-9]{64}$/iD', $manifest['checksum_sha256']) !== 1
-            || !wp_http_validate_url($manifest['download_url'])
-            || !$this->downloadUrlUsesManifestHost($manifest['download_url'])
-        ) {
+        if (!$this->isValidManifest($manifest)) {
             $this->log('The update manifest is invalid.');
             return null;
         }
@@ -151,6 +141,27 @@ final class PluginUpdater
         set_site_transient($this->cacheKey, $manifest, 6 * HOUR_IN_SECONDS);
 
         return $manifest;
+    }
+
+    private function isValidManifest($manifest): bool
+    {
+        if (!is_array($manifest) || ($manifest['slug'] ?? '') !== $this->pluginSlug) {
+            return false;
+        }
+
+        if (!is_string($manifest['version'] ?? null) || preg_match('/^\d+\.\d+\.\d+$/D', $manifest['version']) !== 1) {
+            return false;
+        }
+
+        if (!is_string($manifest['download_url'] ?? null) || !wp_http_validate_url($manifest['download_url'])) {
+            return false;
+        }
+
+        if (!is_string($manifest['checksum_sha256'] ?? null) || preg_match('/^[a-f0-9]{64}$/iD', $manifest['checksum_sha256']) !== 1) {
+            return false;
+        }
+
+        return $this->downloadUrlUsesManifestHost($manifest['download_url']);
     }
 
     private function downloadUrlUsesManifestHost(string $downloadUrl): bool
