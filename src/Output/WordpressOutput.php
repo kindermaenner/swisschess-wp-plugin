@@ -10,18 +10,36 @@ if (!defined('ABSPATH')) {
 
 class WordpressOutput
 {
+    public static function enqueueStyles(): void
+    {
+        wp_enqueue_style(
+            'swisschess-participants',
+            SWISSCHESS_PLUGIN_URL . 'assets/css/swiss-participants.css',
+            [],
+            (string)filemtime(SWISSCHESS_PLUGIN_PATH . 'assets/css/swiss-participants.css')
+        );
+        wp_enqueue_style(
+            'swisschess-ranking',
+            SWISSCHESS_PLUGIN_URL . 'assets/css/swiss-ranking.css',
+            [],
+            (string)filemtime(SWISSCHESS_PLUGIN_PATH . 'assets/css/swiss-ranking.css')
+        );
+        wp_enqueue_style(
+            'swisschess-pairings',
+            SWISSCHESS_PLUGIN_URL . 'assets/css/swiss-pairings.css',
+            [],
+            (string)filemtime(SWISSCHESS_PLUGIN_PATH . 'assets/css/swiss-pairings.css')
+        );
+    }
+
     protected function participantsToHtmlTable(array $participants): string
     {
         if (empty($participants)) {
             return '<p>Keine Teilnehmerdaten vorhanden.</p>';
         }
 
-        $css_file = SWISSCHESS_PLUGIN_PATH . 'assets/css/swiss-participants.css';
-        $css = file_get_contents($css_file);
-
         // Tabellenkopf
-        $html  = "<style>\n" . $css . "\n</style>\n";
-        $html .= '<table class="swiss-participants">';
+        $html  = '<table class="swiss-participants">';
         $html .= '<thead>';
         $html .= '<tr>';
         $html .= '<th>Nr</th>';
@@ -61,12 +79,8 @@ class WordpressOutput
             return '<p>Keine Ranglistendaten vorhanden.</p>';
         }
 
-        $css_file = SWISSCHESS_PLUGIN_PATH . 'assets/css/swiss-ranking.css';
-        $css = file_get_contents($css_file);
-
         // Tabellenkopf
-        $html  = "<style>\n" . $css . "\n</style>\n";
-        $html .= '<div class="swiss-ranking-scroll">';
+        $html  = '<div class="swiss-ranking-scroll">';
         $html .= '<table class="swiss-ranking">';
         $html .= '<thead>';
         $html .= '<tr>';
@@ -120,12 +134,8 @@ class WordpressOutput
 
         $html = '';
 
-        $css = file_get_contents(
-            SWISSCHESS_PLUGIN_PATH . 'assets/css/swiss-pairings.css'
-        );
-
         // Tabellenkopf
-        $html  = "<style>\n" . $css . "\n</style>\n";
+        $html = '';
 
         foreach ($pairings as $roundPairings) {
             if (empty($roundPairings)) {

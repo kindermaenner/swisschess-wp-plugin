@@ -46,6 +46,7 @@ it('renders participants table correctly', function () {
     expect($html)->toContain('<td>M</td>');
     expect($html)->toContain('<td>Hamburg</td>');
     expect($html)->toContain('<td>DE</td>');
+    expect($html)->not->toContain('<style>');
 });
 
 # ---------------------------------------------------------
@@ -93,6 +94,8 @@ it('renders ranking table correctly', function () {
     expect($html)->toContain('<td>10</td>');
     expect($html)->toContain('<td>Berlin</td>');
     expect($html)->toContain('<td>DE</td>');
+    expect($html)->not->toContain('<style>');
+    expect($html)->not->toContain('display: inline');
 });
 
 # ---------------------------------------------------------
@@ -134,6 +137,22 @@ it('renders pairings table correctly', function () {
     expect($html)->toContain('<td>Spieler Schwarz</td>');
     expect($html)->toContain('<td>1</td>');
     expect($html)->toContain('<td>1-0</td>');
+    expect($html)->not->toContain('<style>');
+    expect($html)->not->toContain('border-collapse');
+});
+
+it('enqueues table stylesheets as frontend assets', function () {
+    $GLOBALS['wp_enqueued_styles'] = [];
+
+    WordpressOutputTester::enqueueStyles();
+
+    expect(array_column($GLOBALS['wp_enqueued_styles'], 'handle'))->toBe([
+        'swisschess-participants',
+        'swisschess-ranking',
+        'swisschess-pairings',
+    ]);
+    expect($GLOBALS['wp_enqueued_styles'][1]['src'])
+        ->toBe(SWISSCHESS_PLUGIN_URL . 'assets/css/swiss-ranking.css');
 });
 
 # ---------------------------------------------------------

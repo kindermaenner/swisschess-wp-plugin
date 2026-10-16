@@ -376,4 +376,17 @@ if (!function_exists('plugin_dir_path')) {
     }
 }
 
+if (!function_exists('plugin_dir_url')) {
+    function plugin_dir_url($file) {
+        return 'https://example.test/wp-content/plugins/swisschess/';
+    }
+}
+
+if (!function_exists('wp_enqueue_style')) {
+    function wp_enqueue_style($handle, $src = '', $deps = [], $ver = false, $media = 'all') {
+        $GLOBALS['wp_enqueued_styles'][] = compact('handle', 'src', 'deps', 'ver', 'media');
+    }
+}
+
 define('SWISSCHESS_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('SWISSCHESS_PLUGIN_URL', plugin_dir_url(__FILE__));

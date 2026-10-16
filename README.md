@@ -79,6 +79,7 @@ Template rules:
 - The featured image (`_thumbnail_id`) is copied from the template.
 - Categories are copied from the template, except the category named `Template` or `template`.
 - The generated static page is removed from navigation menus if WordPress has added it automatically.
+- Table styles are loaded as frontend stylesheets; CSS is not stored in the page content.
 
 ### 2. New Round Post
 
