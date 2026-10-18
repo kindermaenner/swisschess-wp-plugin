@@ -2,9 +2,15 @@
 
 /**
  * Plugin Name: SwissChess
+ * Plugin URI: https://github.com/kindermaenner/swisschess-wp-plugin
  * Description: Import von Swiss‑Chess‑Turnierdaten in WordPress.
  * Version: 1.0
+ * Requires PHP: 8.1
  * Author: Nina Kindermann
+ * Author URI: https://kindermaenner.de
+ * License: GPL-2.0-or-later
+ * License URI: https://github.com/kindermaenner/swisschess-wp-plugin/blob/main/LICENSE
+ * Update URI: https://kindermaenner.de/plugin-updates/swisschess/
  */
 
 declare(strict_types=1);
