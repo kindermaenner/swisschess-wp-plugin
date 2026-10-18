@@ -23,7 +23,7 @@ jobs:
     uses: kindermaenner/ci-templates/.github/workflows/wordpress-plugin-release.yml@main
     with:
       plugin-file: SwissChess.php
-      plugin-slug: swisschess-wp-plugin
+      plugin-slug: swisschess
       ftp-target-path: kindermaenner.de/plugin-updates/swisschess
       public-url: https://kindermaenner.de/plugin-updates/swisschess
       php-version: "8.4"
