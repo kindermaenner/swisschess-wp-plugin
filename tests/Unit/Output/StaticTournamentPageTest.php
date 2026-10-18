@@ -83,7 +83,7 @@ it('creates a new static page when none exists', function () {
                 'black_id' => 1,
                 'black_name' => 'Max',
                 'black_points' => '0.0',
-                'result' => '-',
+                'result' => '1 - 0',
             ]
         ]
     ];
@@ -96,6 +96,7 @@ it('creates a new static page when none exists', function () {
 
     expect($insert['post_title'])->toBe('Stadtmeisterschaft 2026');
     expect($insert['post_name'])->toBe('stadtmeisterschaft-2026');
+    expect($insert['post_content'])->toContain('<td>1 : 0</td>');
 
     $metaKey = '_stadtmeisterschaft-2026_static_page';
 

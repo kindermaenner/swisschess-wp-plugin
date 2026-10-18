@@ -196,14 +196,21 @@ class WordpressOutput
 
     protected function normalizeResult(string $rawResult): string
     {
+        $normalizedResult = strtr($rawResult, [
+            '–' => '-',
+            '—' => '-',
+            '−' => '-',
+        ]);
+        $normalizedResult = preg_replace('/\s+/', '', $normalizedResult);
+
         $resultMap = [
-            '1 – 0' => '1:0',
-            '0 – 1' => '0:1',
-            '½ – ½' => '½:½',
-            '+ – –' => '+:-',
-            '- – +' => '-:+'
+            '1-0' => '1 : 0',
+            '0-1' => '0 : 1',
+            '½-½' => '½ : ½',
+            '+--' => '+ : -',
+            '--+' => '- : +',
         ];
-        return $resultMap[$rawResult] ?? $rawResult;   
+        return $resultMap[$normalizedResult] ?? $rawResult;
     }
 
     protected function copyAllMeta(int $from_page_id, int $to_page_id): void

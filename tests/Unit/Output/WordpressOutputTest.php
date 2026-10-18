@@ -136,7 +136,7 @@ it('renders pairings table correctly', function () {
     expect($html)->toContain('<td>20</td>');
     expect($html)->toContain('<td>Spieler Schwarz</td>');
     expect($html)->toContain('<td>1</td>');
-    expect($html)->toContain('<td>1-0</td>');
+    expect($html)->toContain('<td>1 : 0</td>');
     expect($html)->not->toContain('<style>');
     expect($html)->not->toContain('border-collapse');
 });
@@ -144,11 +144,20 @@ it('renders pairings table correctly', function () {
 it('normalizes SwissChess results in the pairings table', function () {
     $o = new WordpressOutputTester();
     $results = [
-        '1 – 0' => '1:0',
-        '0 – 1' => '0:1',
-        '½ – ½' => '½:½',
-        '+ – –' => '+:-',
-        '- – +' => '-:+',
+        '-' => '-',
+        '1 - 0' => '1 : 0',
+        '0 - 1' => '0 : 1',
+        '½ - ½' => '½ : ½',
+        '+ - -' => '+ : -',
+        '- - +' => '- : +',
+        '1-0' => '1 : 0',
+        '1—0' => '1 : 0',
+        '0−1' => '0 : 1',
+        '1 – 0' => '1 : 0',
+        '0 – 1' => '0 : 1',
+        '½ – ½' => '½ : ½',
+        '+ – –' => '+ : -',
+        '- – +' => '- : +',
     ];
     $pairings = [];
 
