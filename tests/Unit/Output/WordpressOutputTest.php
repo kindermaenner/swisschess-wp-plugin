@@ -141,6 +141,38 @@ it('renders pairings table correctly', function () {
     expect($html)->not->toContain('border-collapse');
 });
 
+it('normalizes SwissChess results in the pairings table', function () {
+    $o = new WordpressOutputTester();
+    $results = [
+        '1 – 0' => '1:0',
+        '0 – 1' => '0:1',
+        '½ – ½' => '½:½',
+        '+ – –' => '+:-',
+        '- – +' => '-:+',
+    ];
+    $pairings = [];
+
+    foreach ($results as $rawResult => $expectedResult) {
+        $pairings[] = [
+            'round' => 1,
+            'board' => count($pairings) + 1,
+            'white_id' => 10,
+            'white_name' => 'Spieler Weiß',
+            'white_points' => 0,
+            'black_id' => 20,
+            'black_name' => 'Spieler Schwarz',
+            'black_points' => 0,
+            'result' => $rawResult,
+        ];
+    }
+
+    $html = $o->pairings([$pairings]);
+
+    foreach ($results as $expectedResult) {
+        expect($html)->toContain('<td>' . $expectedResult . '</td>');
+    }
+});
+
 it('enqueues table stylesheets as frontend assets', function () {
     $GLOBALS['wp_enqueued_styles'] = [];
 

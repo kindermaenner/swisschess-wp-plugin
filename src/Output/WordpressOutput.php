@@ -182,7 +182,7 @@ class WordpressOutput
                 $html .= '<td>' . esc_html($p['black_points']) . '</td>';
 
                 // Ergebnis
-                $html .= '<td>' . esc_html($p['result']) . '</td>';
+                $html .= '<td>' . esc_html($this->normalizeResult($p['result'])) . '</td>';
 
                 $html .= '</tr>';
             }
@@ -192,6 +192,18 @@ class WordpressOutput
         }
 
         return $html;
+    }
+
+    protected function normalizeResult(string $rawResult): string
+    {
+        $resultMap = [
+            '1 – 0' => '1:0',
+            '0 – 1' => '0:1',
+            '½ – ½' => '½:½',
+            '+ – –' => '+:-',
+            '- – +' => '-:+'
+        ];
+        return $resultMap[$rawResult] ?? $rawResult;   
     }
 
     protected function copyAllMeta(int $from_page_id, int $to_page_id): void
