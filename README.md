@@ -32,7 +32,7 @@ wp-content/uploads/swisschess
 1. Download the latest swisschess-wp-plugin ZIP:
 
    ```text
-   https://kindermaenner.de/plugin-updates/swisschess/latest/swisschess-wp-plugin.zip
+   https://kindermaenner.de/plugin-updates/swisschess/latest/swisschess.zip
    ```
 
 2. In WordPress, open **Plugins → Add New Plugin → Upload Plugin**.
