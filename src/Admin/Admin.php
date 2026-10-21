@@ -127,7 +127,7 @@ class Admin
         echo '<tr><th scope="row">API‑Key</th><td>';
         echo '<input type="text" value="' . esc_attr($api_key) . '" class="regular-text" style="width:350px;" readonly> ';
         echo '<input type="submit" name="swisschess_generate_key" class="button" value="Neuen API‑Key generieren">';
-        echo '<p class="description">Diesen Key muss die Blitzabend‑App im Header <code>X-MB-Key</code> mitsenden.</p>';
+        echo '<p class="description">Dieser Key muss bei Nutzung der REST-API im Header <code>X-MB-Key</code> mitgesendet werden.</p>';
         echo '</td></tr>';
         echo '</table>';
         echo '</form>';
