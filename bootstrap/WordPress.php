@@ -388,5 +388,39 @@ if (!function_exists('wp_enqueue_style')) {
     }
 }
 
+if (!function_exists('admin_url')) {
+    function admin_url($path = '') {
+        return 'https://example.test/wp-admin/' . ltrim($path, '/');
+    }
+}
+
+if (!function_exists('delete_site_transient')) {
+    function delete_site_transient($key) {
+        $GLOBALS['wp_deleted_site_transients'][] = $key;
+        unset($GLOBALS['wp_site_transients'][$key]);
+        return true;
+    }
+}
+
+if (!function_exists('get_site_transient')) {
+    function get_site_transient($key) {
+        return $GLOBALS['wp_site_transients'][$key] ?? false;
+    }
+}
+
+if (!function_exists('set_site_transient')) {
+    function set_site_transient($key, $value, $expiration = 0) {
+        $GLOBALS['wp_site_transients'][$key] = $value;
+        $GLOBALS['wp_site_transient_expiration'][$key] = $expiration;
+        return true;
+    }
+}
+
+if (!function_exists('wp_update_plugins')) {
+    function wp_update_plugins() {
+        $GLOBALS['wp_update_plugins_called'] = true;
+    }
+}
+
 define('SWISSCHESS_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('SWISSCHESS_PLUGIN_URL', plugin_dir_url(__FILE__));

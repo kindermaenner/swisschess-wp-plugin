@@ -52,3 +52,49 @@ it('generates and stores a new api key from settings page', function () {
     expect(strlen($GLOBALS['wp_updated_options']['swisschess_api_key']))->toBe(32);
 });
 
+
+
+it('renders update section on settings page', function () {
+    ob_start();
+    Admin::render_settings_page();
+    $html = ob_get_clean();
+
+    expect($html)->toContain('Plugin-Aktualisierung');
+    expect($html)->toContain('name="swisschess_check_update"');
+    expect($html)->toContain('Auf Aktualisierungen prüfen');
+});
+
+it('triggers update check and displays message when check button is submitted without updater instance', function () {
+    $_POST['swisschess_check_update'] = '1';
+
+    ob_start();
+    Admin::render_settings_page();
+    $html = ob_get_clean();
+
+    expect($GLOBALS['wp_deleted_site_transients'])->toContain('swisschess_plugin_update');
+    expect($html)->toContain('Update-Cache wurde erfolgreich geleert');
+});
+
+it('triggers update check and displays version status when updater instance is present', function () {
+    $updater = new \SwissChess\Update\PluginUpdater(
+        '/var/www/wp-content/plugins/swisschess/SwissChess.php',
+        '0.9.0',
+        'https://kindermaenner.de/plugin-updates/swisschess/manifest.json'
+    );
+    $GLOBALS['wp_remote_response'] = [
+        'code' => 200,
+        'body' => json_encode([
+            'slug' => 'swisschess',
+            'version' => '0.9.0',
+            'download_url' => 'https://kindermaenner.de/plugin-updates/swisschess/versions/v0.9.0/swisschess.zip',
+            'checksum_sha256' => str_repeat('b', 64),
+        ]),
+    ];
+    $_POST['swisschess_check_update'] = '1';
+
+    ob_start();
+    Admin::render_settings_page();
+    $html = ob_get_clean();
+
+    expect($html)->toContain('Das Plugin ist auf dem neuesten Stand');
+});

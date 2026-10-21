@@ -300,3 +300,32 @@ test('rejects a downloaded package with a checksum mismatch', function () {
         ->and($result->get_error_code())->toBe('swisschess_update_checksum_mismatch')
         ->and(is_file($file))->toBeFalse();
 });
+
+
+test('clears manifest cache when clearManifestCache is called', function () {
+    swissChessCacheManifest(swissChessManifest());
+    expect($GLOBALS['wp_site_transients'])->toHaveKey('swisschess_plugin_update');
+
+    $this->updater->clearManifestCache();
+
+    expect($GLOBALS['wp_site_transients'])->toBeEmpty()
+        ->and($GLOBALS['wp_deleted_site_transients'])->toContain('swisschess_plugin_update');
+});
+
+test('purges cache and detects update on checkUpdateNow', function () {
+    swissChessCacheManifest(swissChessManifest(['version' => '0.8.0']));
+    $GLOBALS['wp_remote_response']['body'] = json_encode(swissChessManifest(['version' => '1.2.0']));
+
+    $status = $this->updater->checkUpdateNow();
+
+    expect($status['current_version'])->toBe('0.9.0')
+        ->and($status['latest_version'])->toBe('1.2.0')
+        ->and($status['has_update'])->toBeTrue()
+        ->and($GLOBALS['wp_deleted_site_transients'])->toContain('swisschess_plugin_update')
+        ->and($GLOBALS['wp_deleted_site_transients'])->toContain('update_plugins');
+});
+
+test('exposes singleton instance', function () {
+    expect(PluginUpdater::getInstance())->toBe($this->updater)
+        ->and($this->updater->getCurrentVersion())->toBe('0.9.0');
+});

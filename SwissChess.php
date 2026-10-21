@@ -25,9 +25,10 @@ define('SWISSCHESS_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('SWISSCHESS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 $pluginData = get_file_data(__FILE__, ['Version' => 'Version']);
+define('SWISSCHESS_VERSION', $pluginData['Version'] ?? '1.0');
 new \SwissChess\Update\PluginUpdater(
     __FILE__,
-    $pluginData['Version'],
+    SWISSCHESS_VERSION,
     'https://kindermaenner.de/plugin-updates/swisschess/manifest.json'
 );
 
