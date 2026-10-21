@@ -84,6 +84,13 @@ if (!function_exists('wp_parse_url')) {
     }
 }
 
+if (!function_exists('esc_url')) {
+    function esc_url($url)
+    {
+        return (string) $url;
+    }
+}
+
 if (!function_exists('download_url')) {
     function download_url($url, $timeout = 300)
     {
@@ -156,7 +163,12 @@ test('registers WordPress updater hooks with the required argument counts', func
 });
 
 test('adds an update when the manifest version is newer', function () {
-    $GLOBALS['wp_remote_response']['body'] = json_encode(swissChessManifest());
+    $GLOBALS['wp_remote_response']['body'] = json_encode(swissChessManifest([
+        'release_notes' => 'New features and fixes',
+        'prerelease' => true,
+        'security_fixes' => true,
+        'requires_php' => '8.1',
+    ]));
     $transient = (object) [
         'checked' => ['swisschess-wp-plugin/SwissChess.php' => '0.9.0'],
         'response' => [],
@@ -166,7 +178,12 @@ test('adds an update when the manifest version is newer', function () {
 
     expect($result->response['swisschess-wp-plugin/SwissChess.php']->new_version)->toBe('1.0.0')
         ->and($result->response['swisschess-wp-plugin/SwissChess.php']->package)
-        ->toBe(swissChessManifest()['download_url']);
+        ->toBe(swissChessManifest()['download_url'])
+        ->and($result->response['swisschess-wp-plugin/SwissChess.php']->upgrade_notice)
+        ->toContain('Security update')
+        ->and($result->response['swisschess-wp-plugin/SwissChess.php']->upgrade_notice)
+        ->toContain('Pre-release')
+        ->and($result->response['swisschess-wp-plugin/SwissChess.php']->requires_php)->toBe('8.1');
     expect($GLOBALS['wp_site_transient_expiration']['swisschess_plugin_update'])->toBe(6 * HOUR_IN_SECONDS);
 });
 
@@ -199,6 +216,50 @@ test('returns plugin information only for this plugin', function () {
         ->toBe($otherResult);
     expect($this->updater->pluginInformation(null, 'plugin_information', (object) ['slug' => 'swisschess-wp-plugin'])->version)
         ->toBe('1.0.0');
+});
+
+test('shows GitHub release details, changelog, and PHP compatibility', function () {
+    $releaseUrl = 'https://github.com/kindermaenner/swisschess-wp-plugin/releases/tag/v1.0.0';
+    $compareUrl = 'https://github.com/kindermaenner/swisschess-wp-plugin/compare/v0.9.0...v1.0.0';
+    swissChessCacheManifest(swissChessManifest([
+        'name' => 'SwissChess',
+        'homepage' => 'https://github.com/kindermaenner/swisschess-wp-plugin',
+        'release_url' => $releaseUrl,
+        'released_at' => '2026-10-20T22:25:45Z',
+        'requires_php' => '8.1',
+        'tested_php' => '8.4',
+        'releases' => [[
+            'version' => '1.0.0',
+            'released_at' => '2026-10-20T22:25:45Z',
+            'notes' => "Security:\n- Improved output handling",
+            'url' => $releaseUrl,
+            'compare_url' => $compareUrl,
+            'prerelease' => false,
+            'security_fixes' => true,
+        ], [
+            'version' => '0.9.0-beta.1',
+            'released_at' => '2026-10-19T22:25:45Z',
+            'notes' => 'Added import preview',
+            'url' => 'https://github.com/kindermaenner/swisschess-wp-plugin/releases/tag/v0.9.0-beta.1',
+            'compare_url' => $compareUrl,
+            'prerelease' => true,
+            'security_fixes' => false,
+        ]],
+    ]));
+
+    $info = $this->updater->pluginInformation(null, 'plugin_information', (object) ['slug' => 'swisschess-wp-plugin']);
+
+    expect($info->name)->toBe('SwissChess')
+        ->and($info->homepage)->toBe('https://github.com/kindermaenner/swisschess-wp-plugin')
+        ->and($info->requires_php)->toBe('8.1')
+        ->and($info->last_updated)->toBe('2026-10-20 22:25:45')
+        ->and($info->sections['changelog'])->toContain('Security:')
+        ->and($info->sections['changelog'])->toContain('Security update')
+        ->and($info->sections['changelog'])->toContain('Pre-release')
+        ->and($info->sections['changelog'])->toContain($releaseUrl)
+        ->and($info->sections['changelog'])->toContain($compareUrl)
+        ->and($info->sections['description'])->toContain('Requires PHP 8.1')
+        ->and($info->sections['description'])->toContain('tested with PHP 8.4');
 });
 
 test('clears its update manifest cache after plugin updates', function () {

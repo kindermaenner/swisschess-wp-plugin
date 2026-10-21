@@ -45,6 +45,8 @@ wp-content/uploads/swisschess
 
 New releases are offered through the WordPress plugin updater. To check manually, open **Dashboard → Updates** (or **Plugins → Installed Plugins**) and check for updates. When a swisschess-wp-plugin update is available, choose **Update now**. Back up the site before updating, as with any plugin.
 
+The update details include GitHub release notes and links to each release and its changes. Release date, pre-release/security labels, required PHP version, and the PHP version used by automated CI are populated from GitHub and the release workflow.
+
 ## Configuration
 
 The plugin adds a new menu point "Swiss Chess" in the admin dashboard. The following settings are available there:
