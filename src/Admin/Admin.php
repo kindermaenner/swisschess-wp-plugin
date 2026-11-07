@@ -38,43 +38,14 @@ class Admin
 
     public static function render_settings_page()
     {
-
-        // Aktuelle Werte laden
         $author    = get_option('swisschess_author', '');
         $template_static_page = get_option('swisschess_template_static_page', '');
         $template_next_round_post = get_option('swisschess_template_next_round_post', '');
         $template_final_results_post = get_option('swisschess_template_final_results_post', '');
         $api_key   = get_option('swisschess_api_key', '');
         $delete_after_import = get_option('swisschess_delete_after_import', false);
-        // Wenn "Neuen Key generieren" gedrückt wurde (eigenes Formular!)
-        if (isset($_POST['swisschess_generate_key'])) {
-            check_admin_referer('swisschess_generate_key_action');
-
-            $new_key = wp_generate_password(32, false, false);
-            update_option('swisschess_api_key', $new_key);
-            $api_key = $new_key;
-
-            echo '<div class="updated"><p>Neuer API‑Key wurde generiert.</p></div>';
-        }
-
-        // Wenn "Auf Aktualisierungen prüfen" gedrückt wurde
-        $updateResult = null;
-        $cachePurgedNotice = false;
-        if (isset($_POST['swisschess_check_update'])) {
-            check_admin_referer('swisschess_check_update_action');
-
-            if (class_exists(\SwissChess\Update\PluginUpdater::class)) {
-                $updater = \SwissChess\Update\PluginUpdater::getInstance();
-                if ($updater !== null) {
-                    $updateResult = $updater->checkUpdateNow();
-                } else {
-                    \SwissChess\Update\PluginUpdater::purge();
-                    $cachePurgedNotice = true;
-                }
-            }
-        }
-
-        // Userliste
+        $api_key = self::generateApiKeyIfRequested($api_key);
+        [$updateResult, $cachePurgedNotice] = self::checkForUpdateIfRequested();
         $users = get_users([
             'fields' => ['ID', 'user_login']
         ]);
@@ -82,29 +53,94 @@ class Admin
         echo '<div class="wrap">';
         echo '<h1>Swiss Chess – Einstellungen</h1>';
 
+        self::renderUpdateNotice($updateResult, $cachePurgedNotice);
+        self::renderUpdateSection(self::getInstalledVersion());
+        echo '<h2 style="margin-top:30px;">⚙️ Einstellungen</h2>';
+        self::renderApiKeyForm($api_key);
+        self::renderOptionsForm(
+            $author,
+            $template_static_page,
+            $template_next_round_post,
+            $template_final_results_post,
+            $api_key,
+            $delete_after_import,
+            $users
+        );
+        echo '</div>';
+    }
+
+    private static function generateApiKeyIfRequested(string $apiKey): string
+    {
+        if (!isset($_POST['swisschess_generate_key'])) {
+            return $apiKey;
+        }
+
+        check_admin_referer('swisschess_generate_key_action');
+        $apiKey = wp_generate_password(32, false, false);
+        update_option('swisschess_api_key', $apiKey);
+        echo '<div class="updated"><p>Neuer API‑Key wurde generiert.</p></div>';
+
+        return $apiKey;
+    }
+
+    private static function checkForUpdateIfRequested(): array
+    {
+        $updateResult = null;
+        $cachePurgedNotice = false;
+        if (!isset($_POST['swisschess_check_update'])) {
+            return [$updateResult, $cachePurgedNotice];
+        }
+
+        check_admin_referer('swisschess_check_update_action');
+        if (!class_exists(\SwissChess\Update\PluginUpdater::class)) {
+            return [$updateResult, $cachePurgedNotice];
+        }
+
+        $updater = \SwissChess\Update\PluginUpdater::getInstance();
+        if ($updater !== null) {
+            return [$updater->checkUpdateNow(), $cachePurgedNotice];
+        }
+
+        \SwissChess\Update\PluginUpdater::purge();
+
+        return [$updateResult, true];
+    }
+
+    private static function renderUpdateNotice(?array $updateResult, bool $cachePurgedNotice): void
+    {
         if ($updateResult !== null) {
-            if ($updateResult['has_update']) {
-                $updateUrl = function_exists('admin_url') ? admin_url('plugins.php') : 'plugins.php';
-                echo '<div class="notice notice-warning"><p><strong>🚀 Neue Version ' . esc_html($updateResult['latest_version'] ?? '') . ' verfügbar!</strong> Aktuell installiert: ' . esc_html($updateResult['current_version']) . '. <a href="' . esc_url($updateUrl) . '">Jetzt auf der Plugin-Seite aktualisieren &rarr;</a></p></div>';
-            } else {
-                $displayVersion = $updateResult['latest_version'] ?? $updateResult['current_version'];
-                echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>Das Plugin ist auf dem neuesten Stand</strong> (Version ' . esc_html($displayVersion) . ').</p></div>';
-            }
+            self::renderUpdateResultNotice($updateResult);
         } elseif ($cachePurgedNotice) {
             echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>Update-Cache wurde erfolgreich geleert.</strong></p></div>';
         }
+    }
 
-        /*
-        * 1) SEKTION: Plugin-Aktualisierung
-        */
-        $installedVersion = defined('SWISSCHESS_VERSION') ? SWISSCHESS_VERSION : '1.0';
+    private static function renderUpdateResultNotice(array $updateResult): void
+    {
+        if ($updateResult['has_update']) {
+            $updateUrl = function_exists('admin_url') ? admin_url('plugins.php') : 'plugins.php';
+            echo '<div class="notice notice-warning"><p><strong>🚀 Neue Version ' . esc_html($updateResult['latest_version'] ?? '') . ' verfügbar!</strong> Aktuell installiert: ' . esc_html($updateResult['current_version']) . '. <a href="' . esc_url($updateUrl) . '">Jetzt auf der Plugin-Seite aktualisieren &rarr;</a></p></div>';
+            return;
+        }
+
+        $displayVersion = $updateResult['latest_version'] ?? $updateResult['current_version'];
+        echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>Das Plugin ist auf dem neuesten Stand</strong> (Version ' . esc_html($displayVersion) . ').</p></div>';
+    }
+
+    private static function getInstalledVersion(): string
+    {
         if (class_exists(\SwissChess\Update\PluginUpdater::class)) {
             $updater = \SwissChess\Update\PluginUpdater::getInstance();
             if ($updater !== null) {
-                $installedVersion = $updater->getCurrentVersion();
+                return $updater->getCurrentVersion();
             }
         }
 
+        return defined('SWISSCHESS_VERSION') ? SWISSCHESS_VERSION : '1.0';
+    }
+
+    private static function renderUpdateSection(string $installedVersion): void
+    {
         echo '<div class="card" style="max-width:600px; margin:20px 0; padding:16px 20px;">';
         echo '<h2 style="margin-top:0;">🔄 Plugin-Aktualisierung</h2>';
         echo '<p>Installierte Version: <strong>' . esc_html($installedVersion) . '</strong></p>';
@@ -114,30 +150,34 @@ class Admin
         echo '<p class="description">Leert den internen 6-Stunden-Cache und prüft sofort beim Update-Server auf neue Releases.</p>';
         echo '</form>';
         echo '</div>';
+    }
 
-        /*
-        * 2) SEKTION: Einstellungen
-        */
-        echo '<h2 style="margin-top:30px;">⚙️ Einstellungen</h2>';
-
-        // Formular 1: API‑Key generieren
+    private static function renderApiKeyForm(string $apiKey): void
+    {
         echo '<form method="post" style="margin-bottom:0;">';
         wp_nonce_field('swisschess_generate_key_action');
         echo '<table class="form-table" style="margin-bottom:0;">';
         echo '<tr><th scope="row">API‑Key</th><td>';
-        echo '<input type="text" value="' . esc_attr($api_key) . '" class="regular-text" style="width:350px;" readonly> ';
+        echo '<input type="text" value="' . esc_attr($apiKey) . '" class="regular-text" style="width:350px;" readonly> ';
         echo '<input type="submit" name="swisschess_generate_key" class="button" value="Neuen API‑Key generieren">';
         echo '<p class="description">Dieser Key muss bei Nutzung der REST-API im Header <code>X-MB-Key</code> mitgesendet werden.</p>';
         echo '</td></tr>';
         echo '</table>';
         echo '</form>';
+    }
 
-        /*
-        * Formular 2: Normale Einstellungen (läuft über options.php)
-        */
+    private static function renderOptionsForm(
+        $author,
+        string $templateStaticPage,
+        string $templateNextRoundPost,
+        string $templateFinalResultsPost,
+        string $apiKey,
+        $deleteAfterImport,
+        array $users
+    ): void {
         echo '<form method="post" action="options.php">';
         settings_fields('swisschess');
-        echo '<input type="hidden" name="swisschess_api_key" value="' . esc_attr($api_key) . '">';
+        echo '<input type="hidden" name="swisschess_api_key" value="' . esc_attr($apiKey) . '">';
 
         echo '<table class="form-table">';
 
@@ -156,23 +196,23 @@ class Admin
 
         // Template für statische Turnierseite
         echo '<tr><th scope="row">Template: Statische Turnierseite</th><td>';
-        echo '<input type="text" name="swisschess_template_static_page" value="' . esc_attr($template_static_page) . '" class="regular-text">';
+        echo '<input type="text" name="swisschess_template_static_page" value="' . esc_attr($templateStaticPage) . '" class="regular-text">';
         echo '</td></tr>';
 
         // Template für Beitrag zur neu ausgelosten Runde
         echo '<tr><th scope="row">Template: Beitrag neu ausgeloste Runde</th><td>';
-        echo '<input type="text" name="swisschess_template_next_round_post" value="' . esc_attr($template_next_round_post) . '" class="regular-text">';
+        echo '<input type="text" name="swisschess_template_next_round_post" value="' . esc_attr($templateNextRoundPost) . '" class="regular-text">';
         echo '</td></tr>';
 
         // Template für Beitrag über Turnierergebnis
         echo '<tr><th scope="row">Template: Beitrag Turnierergebnis</th><td>';
-        echo '<input type="text" name="swisschess_template_final_results_post" value="' . esc_attr($template_final_results_post) . '" class="regular-text">';
+        echo '<input type="text" name="swisschess_template_final_results_post" value="' . esc_attr($templateFinalResultsPost) . '" class="regular-text">';
         echo '</td></tr>';
 
         // Dateien nach Import löschen
         echo '<tr><th scope="row">Dateien nach Import löschen</th><td>';
         echo '<label>';
-        echo '<input type="checkbox" name="swisschess_delete_after_import" value="1" ' . checked(1, $delete_after_import, false) . '>';
+        echo '<input type="checkbox" name="swisschess_delete_after_import" value="1" ' . checked(1, $deleteAfterImport, false) . '>';
         echo ' Nach erfolgreichem Import die HTML‑Dateien löschen';
         echo '</label>';
         echo '<p class="description">Wenn aktiviert, werden die eingelesenen Swiss‑Chess‑Dateien nach dem Import entfernt.</p>';
@@ -182,7 +222,5 @@ class Admin
 
         submit_button();
         echo '</form>';
-
-        echo '</div>';
     }
 }
